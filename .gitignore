@@ -1,6 +1,10 @@
 ### AL ###
 #Template for AL projects for Dynamics 365 Business Central
 #launch.json folder
+
+.png
+.gv
+
 .vscode/
 #Cache folder
 .alcache/
