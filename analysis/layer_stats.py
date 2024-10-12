@@ -5,10 +5,10 @@ import cv2
 import os
 
 
-def test_function_graph(function, function_name, input_shape, y_output, start_dim = 0):
-    diff = len(input_shape) - start_dim
+def test_function_graph(function, function_name, input_shape, y_output, itter_dim = 0):
+    diff = len(input_shape) - itter_dim
 
-    x_data = torch.linspace(-3, 3, y_output.shape[2] * y_output.shape[3], device='cuda:1').view(1, 1, 197, 64)
+    x_data = torch.linspace(-3, 3, input_shape[itter_dim + 1] * input_shape[itter_dim + 2], device=y_output.get_device()).view(1, 1, 197, 64)
     x_data = x_data.repeat(1, y_output.shape[1], 1, 1)
     
     y_output = function(x_data)
@@ -23,7 +23,7 @@ def test_function_graph(function, function_name, input_shape, y_output, start_di
         legend_size = 18
         plt.figure(figsize=(10, 6))
         plt.plot(x_data, y_output, 'r-', label=f'{function_name} Function', linewidth=4)
-    
+
         # Add details for better readability and presentation
         # plt.title(f'Fitting Complex Function to {function_name}', fontsize=16)
         plt.xlabel('x', fontsize=label_size)
