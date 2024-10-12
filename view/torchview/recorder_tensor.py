@@ -94,6 +94,8 @@ def creation_ops_wrapper(
 
 def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]: # This returns the inner function that is recallable
     '''Wrapper for forward functions of modules'''
+    '''When you call the outer function function_1, it will define function_2 and return the function object itself,
+    rather than executing it. To actually execute function_2, you'd need to call it explicitly outside or within function_1. So, you're essentially returning an unopened box.'''
     def _module_forward_wrapper(mod: nn.Module, *args: Any, **kwargs: Any) -> Any:
         '''Forward prop of module for RecorderTensor subclass
         Construct Module Node => forward-prop => process output nodes to retain

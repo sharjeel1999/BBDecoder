@@ -250,6 +250,7 @@ def forward_prop(
                 f"Specified model mode not recognized: {mode}"
             )
         new_module_forward = module_forward_wrapper(model_graph)
+        # _orig_module_forward = torch.nn.Module.__call__
         with Recorder(_orig_module_forward, new_module_forward, model_graph):
             with torch.no_grad():
                 if isinstance(x, (list, tuple)):
