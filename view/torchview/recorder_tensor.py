@@ -55,7 +55,7 @@ class Recorder:
         for name, op in zip(orig_name_list, _orig_op_list): # the name of the operator and the operator it self
             setattr(
                 torch, name, creation_ops_wrapper(op, self.model_graph)
-            )
+            ) # this is setting an attribute on the torch object. The attribute is named 'name' with it's value is creation_ops_wrapper(op, self.model_graph)
 
     def __exit__(self, exc_type: Any, exc_value: Any, exc_traceback: Any) -> None:
         # reset module __call__ back to original method and torch creation ops
