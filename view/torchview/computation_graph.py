@@ -114,6 +114,8 @@ class ComputationGraph:
         self.node_hierarchy = {
             main_container_module: list(self.root_container)
         }
+        print(self.node_hierarchy)
+        print('--------------------------------')
         for root_node in self.root_container:
             root_node.context = self.node_hierarchy[main_container_module]
 
@@ -191,6 +193,7 @@ class ComputationGraph:
         in graphviz graph)'''
 
         cur_node = kwargs['cur_node']
+        print('current node: ', cur_node)
         # if tensor node is traced, dont repeat collecting
         # if node is isolated, dont record it
         is_isolated = cur_node.is_root() and cur_node.is_leaf()
@@ -202,10 +205,12 @@ class ComputationGraph:
         # add node
         if is_cur_visible:
             subgraph = kwargs['subgraph']
+            #print('sub graph: ', subgraph)
             if isinstance(cur_node, (FunctionNode, ModuleNode)):
+                print('function or module cur_node: ', cur_node)
                 if self.roll:
                     self.rollify(cur_node)
-                self.add_node(cur_node, subgraph)
+                self.add_node(cur_node, subgraph) # details should be in cur_node
 
             if isinstance(cur_node, TensorNode):
                 self.add_node(cur_node, subgraph)

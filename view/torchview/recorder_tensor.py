@@ -56,7 +56,6 @@ class Recorder:
         )
 
         for name, op in zip(orig_name_list, _orig_op_list): # the name of the operator and the operator it self
-            print('operator name: ', name)
             setattr(
                 torch, name, creation_ops_wrapper(op, self.model_graph)
             ) # this is setting an attribute on the torch object. The attribute is named 'name' with it's value is creation_ops_wrapper(op, self.model_graph)
@@ -121,7 +120,7 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
 
         # Create module_node and connect to its parents tensor node
         cur_depth = next(iter(input_nodes)).depth
-        input_context = next(iter(input_nodes)).context
+        input_context = next(iter(input_nodes)).context ################################################################ setting depth to ModuleNode
         cur_node = ModuleNode(
             mod, cur_depth, input_nodes,  # type: ignore[arg-type]
             name=type(mod).__name__
@@ -150,8 +149,6 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
 
         model_graph.context_tracker['current_depth'] = cur_depth+1
         model_graph.context_tracker['current_context'] = input_context[-1][cur_node]
-        print('tracked depth: ', cur_depth)
-        print('track context: ', input_context)
 
         # TODO: check if output contains RecorderTensor
         # this seems not to be necessary so far
