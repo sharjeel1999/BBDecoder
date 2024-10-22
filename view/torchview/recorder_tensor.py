@@ -33,6 +33,9 @@ orig_name_list = [
 _orig_op_list = [getattr(torch, name) for name in orig_name_list]
 
 
+def study_inter(model_graph):
+    print('in study inter')
+
 class Recorder:
     '''Context Manager that sets modules forward and torch creation ops
     to record them in computation graph.
@@ -53,6 +56,7 @@ class Recorder:
         )
 
         for name, op in zip(orig_name_list, _orig_op_list): # the name of the operator and the operator it self
+            print('operator name: ', name)
             setattr(
                 torch, name, creation_ops_wrapper(op, self.model_graph)
             ) # this is setting an attribute on the torch object. The attribute is named 'name' with it's value is creation_ops_wrapper(op, self.model_graph)
@@ -78,6 +82,7 @@ def creation_ops_wrapper(
         current_depth = model_graph.context_tracker['current_depth']
         current_context = model_graph.context_tracker['current_context']
 
+        # converts the input_tensor to an instance of the RecorderTensor subclass
         input_recorder_tensor: RecorderTensor = input_tensor.as_subclass(RecorderTensor)
         input_node = TensorNode(
             tensor=input_recorder_tensor,
@@ -96,7 +101,7 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
     '''Wrapper for forward functions of modules'''
     '''When you call the outer function function_1, it will define function_2 and return the function object itself,
     rather than executing it. To actually execute function_2, you'd need to call it explicitly outside or within function_1. So, you're essentially returning an unopened box.'''
-    def _module_forward_wrapper(mod: nn.Module, *args: Any, **kwargs: Any) -> Any:
+    def _module_forward_wrapper(mod: nn.Module, *args: Any, **kwargs: Any) -> Any: # mod = module instance
         '''Forward prop of module for RecorderTensor subclass
         Construct Module Node => forward-prop => process output nodes to retain
         module hierarchy correctly
@@ -145,6 +150,8 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
 
         model_graph.context_tracker['current_depth'] = cur_depth+1
         model_graph.context_tracker['current_context'] = input_context[-1][cur_node]
+        print('tracked depth: ', cur_depth)
+        print('track context: ', input_context)
 
         # TODO: check if output contains RecorderTensor
         # this seems not to be necessary so far

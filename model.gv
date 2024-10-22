@@ -1,5 +1,5 @@
 strict digraph model {
-	graph [ordering=in rankdir=TB size="240.6,240.6"]
+	graph [ordering=in rankdir=TB size="142.2,142.2"]
 	node [align=left fontname="Linux libertine" fontsize=10 height=0.2 margin=0 ranksep=0.1 shape=plaintext style=filled]
 	edge [fontsize=10]
 	0 [label=<
@@ -23,11 +23,6 @@ strict digraph model {
 	2 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:1</TD><TD>(2, 768, 14, 14)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-	3 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
                     <TR>
                         <TD ROWSPAN="2">reshape<BR/>depth:1</TD>
                         <TD COLSPAN="2">input:</TD>
@@ -38,12 +33,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 768, 196) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
-	4 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:1</TD><TD>(2, 768, 196)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-	5 [label=<
+	3 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -56,12 +46,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 196, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
-	6 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:1</TD><TD>(2, 196, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-	7 [label=<
+	4 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -74,14 +59,9 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
-	8 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:1</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
 	subgraph cluster_2 {
 		fontsize=12 label=Encoder labeljust=l style=dashed
-		9 [label=<
+		5 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -94,12 +74,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
-		10 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:2</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-		11 [label=<
+		6 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -112,15 +87,91 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-		12 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:2</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
 		subgraph cluster_3 {
 			fontsize=12 label=Sequential labeljust=l style=dashed
 			subgraph cluster_4 {
 				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+				7 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_5 {
+					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+					8 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					9 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					10 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+				}
+				11 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				12 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
 				13 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
@@ -134,73 +185,65 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-				14 [label=<
+				subgraph cluster_6 {
+					fontsize=12 label=MLPBlock labeljust=l style=dashed
+					14 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_5 {
-					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+                    <TR>
+                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 					15 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     <TR>
                         <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
-                    </TABLE>> fillcolor=aliceblue]
+                    </TABLE>> fillcolor=darkseagreen1]
 					16 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 					17 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					18 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					19 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     <TR>
                         <TD COLSPAN="2">output: </TD>
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					20 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				21 [label=<
+                    </TABLE>> fillcolor=darkseagreen1]
+					18 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
@@ -209,12 +252,8 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-				22 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				23 [label=<
+				}
+				19 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -227,12 +266,10 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
-				24 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				25 [label=<
+			}
+			subgraph cluster_7 {
+				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+				20 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -245,12 +282,88 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_8 {
+					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+					21 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					22 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					23 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+				}
+				24 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				25 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
 				26 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_6 {
+                    <TR>
+                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_9 {
 					fontsize=12 label=MLPBlock labeljust=l style=dashed
 					27 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
@@ -268,11 +381,6 @@ strict digraph model {
 					28 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					29 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
                     <TR>
                         <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
@@ -283,12 +391,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					30 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					31 [label=<
+					29 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -301,12 +404,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					32 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					33 [label=<
+					30 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -319,12 +417,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					34 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					35 [label=<
+					31 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -337,13 +430,8 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					36 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
 				}
-				37 [label=<
+				32 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -356,14 +444,90 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
+			}
+			subgraph cluster_10 {
+				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+				33 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_11 {
+					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+					34 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					35 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					36 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+				}
+				37 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 				38 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:3</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-			}
-			subgraph cluster_7 {
-				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+                    <TR>
+                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
 				39 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
@@ -377,73 +541,65 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-				40 [label=<
+				subgraph cluster_12 {
+					fontsize=12 label=MLPBlock labeljust=l style=dashed
+					40 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_8 {
-					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+                    <TR>
+                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 					41 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     <TR>
                         <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
-                    </TABLE>> fillcolor=aliceblue]
+                    </TABLE>> fillcolor=darkseagreen1]
 					42 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 					43 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					44 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					45 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     <TR>
                         <TD COLSPAN="2">output: </TD>
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					46 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				47 [label=<
+                    </TABLE>> fillcolor=darkseagreen1]
+					44 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
@@ -452,12 +608,8 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-				48 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				49 [label=<
+				}
+				45 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -470,12 +622,10 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
-				50 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				51 [label=<
+			}
+			subgraph cluster_13 {
+				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+				46 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -488,12 +638,88 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_14 {
+					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+					47 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					48 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					49 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+				}
+				50 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				51 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
 				52 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_9 {
+                    <TR>
+                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_15 {
 					fontsize=12 label=MLPBlock labeljust=l style=dashed
 					53 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
@@ -511,11 +737,6 @@ strict digraph model {
 					54 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					55 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
                     <TR>
                         <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
@@ -526,12 +747,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					56 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					57 [label=<
+					55 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -544,12 +760,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					58 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					59 [label=<
+					56 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -562,12 +773,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					60 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					61 [label=<
+					57 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -580,13 +786,8 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					62 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
 				}
-				63 [label=<
+				58 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -599,14 +800,90 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
+			}
+			subgraph cluster_16 {
+				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+				59 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_17 {
+					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+					60 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					61 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					62 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+				}
+				63 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 				64 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:3</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-			}
-			subgraph cluster_10 {
-				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+                    <TR>
+                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
 				65 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
@@ -620,73 +897,65 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-				66 [label=<
+				subgraph cluster_18 {
+					fontsize=12 label=MLPBlock labeljust=l style=dashed
+					66 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_11 {
-					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+                    <TR>
+                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 					67 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     <TR>
                         <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
-                    </TABLE>> fillcolor=aliceblue]
+                    </TABLE>> fillcolor=darkseagreen1]
 					68 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 					69 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					70 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					71 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     <TR>
                         <TD COLSPAN="2">output: </TD>
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					72 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				73 [label=<
+                    </TABLE>> fillcolor=darkseagreen1]
+					70 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
@@ -695,12 +964,8 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-				74 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				75 [label=<
+				}
+				71 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -713,12 +978,10 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
-				76 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				77 [label=<
+			}
+			subgraph cluster_19 {
+				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+				72 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -731,12 +994,88 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_20 {
+					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+					73 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					74 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					75 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+				}
+				76 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				77 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
 				78 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_12 {
+                    <TR>
+                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_21 {
 					fontsize=12 label=MLPBlock labeljust=l style=dashed
 					79 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
@@ -754,11 +1093,6 @@ strict digraph model {
 					80 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					81 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
                     <TR>
                         <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
@@ -769,12 +1103,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					82 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					83 [label=<
+					81 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -787,12 +1116,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					84 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					85 [label=<
+					82 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -805,12 +1129,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					86 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					87 [label=<
+					83 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -823,13 +1142,8 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					88 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
 				}
-				89 [label=<
+				84 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -842,14 +1156,90 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
+			}
+			subgraph cluster_22 {
+				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+				85 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_23 {
+					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+					86 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					87 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					88 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+				}
+				89 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 				90 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:3</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-			}
-			subgraph cluster_13 {
-				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+                    <TR>
+                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
 				91 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
@@ -863,73 +1253,65 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-				92 [label=<
+				subgraph cluster_24 {
+					fontsize=12 label=MLPBlock labeljust=l style=dashed
+					92 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_14 {
-					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+                    <TR>
+                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 					93 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     <TR>
                         <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
-                    </TABLE>> fillcolor=aliceblue]
+                    </TABLE>> fillcolor=darkseagreen1]
 					94 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 					95 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					96 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					97 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     <TR>
                         <TD COLSPAN="2">output: </TD>
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					98 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				99 [label=<
+                    </TABLE>> fillcolor=darkseagreen1]
+					96 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
@@ -938,12 +1320,8 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-				100 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				101 [label=<
+				}
+				97 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -956,12 +1334,10 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
-				102 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				103 [label=<
+			}
+			subgraph cluster_25 {
+				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+				98 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -974,12 +1350,88 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_26 {
+					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+					99 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					100 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					101 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+				}
+				102 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				103 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
 				104 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_15 {
+                    <TR>
+                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_27 {
 					fontsize=12 label=MLPBlock labeljust=l style=dashed
 					105 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
@@ -997,11 +1449,6 @@ strict digraph model {
 					106 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					107 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
                     <TR>
                         <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
@@ -1012,12 +1459,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					108 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					109 [label=<
+					107 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -1030,12 +1472,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					110 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					111 [label=<
+					108 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -1048,12 +1485,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					112 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					113 [label=<
+					109 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -1066,13 +1498,8 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					114 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
 				}
-				115 [label=<
+				110 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -1085,14 +1512,90 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
+			}
+			subgraph cluster_28 {
+				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+				111 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_29 {
+					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+					112 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					113 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					114 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+				}
+				115 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 				116 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:3</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-			}
-			subgraph cluster_16 {
-				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+                    <TR>
+                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
 				117 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
@@ -1106,73 +1609,65 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-				118 [label=<
+				subgraph cluster_30 {
+					fontsize=12 label=MLPBlock labeljust=l style=dashed
+					118 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_17 {
-					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+                    <TR>
+                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 					119 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     <TR>
                         <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
-                    </TABLE>> fillcolor=aliceblue]
+                    </TABLE>> fillcolor=darkseagreen1]
 					120 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 					121 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					122 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					123 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     <TR>
                         <TD COLSPAN="2">output: </TD>
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					124 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				125 [label=<
+                    </TABLE>> fillcolor=darkseagreen1]
+					122 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
@@ -1181,12 +1676,8 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-				126 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				127 [label=<
+				}
+				123 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -1199,12 +1690,10 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
-				128 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				129 [label=<
+			}
+			subgraph cluster_31 {
+				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+				124 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -1217,12 +1706,88 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_32 {
+					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+					125 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					126 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					127 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+				}
+				128 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				129 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
 				130 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_18 {
+                    <TR>
+                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_33 {
 					fontsize=12 label=MLPBlock labeljust=l style=dashed
 					131 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
@@ -1240,11 +1805,6 @@ strict digraph model {
 					132 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					133 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
                     <TR>
                         <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
@@ -1255,12 +1815,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					134 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					135 [label=<
+					133 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -1273,12 +1828,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					136 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					137 [label=<
+					134 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -1291,12 +1841,7 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					138 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					139 [label=<
+					135 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -1309,13 +1854,8 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					140 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
 				}
-				141 [label=<
+				136 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -1328,14 +1868,90 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
+			}
+			subgraph cluster_34 {
+				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+				137 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_35 {
+					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+					138 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					139 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					140 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+				}
+				141 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 				142 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:3</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-			}
-			subgraph cluster_19 {
-				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+                    <TR>
+                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
 				143 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
@@ -1349,73 +1965,65 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-				144 [label=<
+				subgraph cluster_36 {
+					fontsize=12 label=MLPBlock labeljust=l style=dashed
+					144 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_20 {
-					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+                    <TR>
+                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 					145 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     <TR>
                         <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
-                    </TABLE>> fillcolor=aliceblue]
+                    </TABLE>> fillcolor=darkseagreen1]
 					146 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 					147 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					148 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					149 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
                     <TR>
                         <TD COLSPAN="2">output: </TD>
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					150 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				151 [label=<
+                    </TABLE>> fillcolor=darkseagreen1]
+					148 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
@@ -1424,12 +2032,8 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-				152 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				153 [label=<
+				}
+				149 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -1442,12 +2046,10 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
-				154 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				155 [label=<
+			}
+			subgraph cluster_37 {
+				fontsize=12 label=EncoderBlock labeljust=l style=dashed
+				150 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -1460,12 +2062,88 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_38 {
+					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
+					151 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					152 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+					153 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(197, 2, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
+				}
+				154 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				155 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1"
+                    CELLSPACING="0" CELLPADDING="4">
+                    <TR>
+                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=aliceblue]
 				156 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_21 {
+                    <TR>
+                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
+				subgraph cluster_39 {
 					fontsize=12 label=MLPBlock labeljust=l style=dashed
 					157 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
@@ -1483,13 +2161,21 @@ strict digraph model {
 					158 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
+                    <TR>
+                        <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 					159 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
-                        <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
+                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
                         <TD COLSPAN="2">(2, 197, 3072) </TD>
                     </TR>
@@ -1501,50 +2187,22 @@ strict digraph model {
 					160 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
+                    <TR>
+                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
+                        <TD COLSPAN="2">input:</TD>
+                        <TD COLSPAN="2">(2, 197, 3072) </TD>
+                    </TR>
+                    <TR>
+                        <TD COLSPAN="2">output: </TD>
+                        <TD COLSPAN="2">(2, 197, 768) </TD>
+                    </TR>
+                    </TABLE>> fillcolor=darkseagreen1]
 					161 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
                         <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
                         <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					162 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					163 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					164 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					165 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     <TR>
@@ -1552,13 +2210,8 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-					166 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
 				}
-				167 [label=<
+				162 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -1571,1472 +2224,9 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
-				168 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:3</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-			}
-			subgraph cluster_22 {
-				fontsize=12 label=EncoderBlock labeljust=l style=dashed
-				169 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				170 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_23 {
-					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
-					171 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					172 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					173 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					174 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					175 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					176 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				177 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				178 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				179 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-				180 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				181 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				182 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_24 {
-					fontsize=12 label=MLPBlock labeljust=l style=dashed
-					183 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					184 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					185 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					186 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					187 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					188 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					189 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					190 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					191 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					192 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				193 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-				194 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:3</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-			}
-			subgraph cluster_25 {
-				fontsize=12 label=EncoderBlock labeljust=l style=dashed
-				195 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				196 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_26 {
-					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
-					197 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					198 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					199 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					200 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					201 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					202 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				203 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				204 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				205 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-				206 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				207 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				208 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_27 {
-					fontsize=12 label=MLPBlock labeljust=l style=dashed
-					209 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					210 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					211 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					212 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					213 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					214 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					215 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					216 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					217 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					218 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				219 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-				220 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:3</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-			}
-			subgraph cluster_28 {
-				fontsize=12 label=EncoderBlock labeljust=l style=dashed
-				221 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				222 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_29 {
-					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
-					223 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					224 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					225 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					226 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					227 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					228 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				229 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				230 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				231 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-				232 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				233 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				234 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_30 {
-					fontsize=12 label=MLPBlock labeljust=l style=dashed
-					235 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					236 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					237 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					238 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					239 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					240 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					241 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					242 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					243 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					244 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				245 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-				246 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:3</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-			}
-			subgraph cluster_31 {
-				fontsize=12 label=EncoderBlock labeljust=l style=dashed
-				247 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				248 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_32 {
-					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
-					249 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					250 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					251 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					252 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					253 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					254 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				255 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				256 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				257 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-				258 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				259 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				260 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_33 {
-					fontsize=12 label=MLPBlock labeljust=l style=dashed
-					261 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					262 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					263 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					264 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					265 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					266 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					267 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					268 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					269 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					270 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				271 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-				272 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:3</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-			}
-			subgraph cluster_34 {
-				fontsize=12 label=EncoderBlock labeljust=l style=dashed
-				273 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				274 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_35 {
-					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
-					275 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					276 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					277 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					278 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					279 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					280 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				281 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				282 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				283 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-				284 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				285 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				286 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_36 {
-					fontsize=12 label=MLPBlock labeljust=l style=dashed
-					287 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					288 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					289 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					290 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					291 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					292 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					293 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					294 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					295 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					296 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				297 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-				298 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:3</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-			}
-			subgraph cluster_37 {
-				fontsize=12 label=EncoderBlock labeljust=l style=dashed
-				299 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				300 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_38 {
-					fontsize=12 label=MultiheadAttention labeljust=l style=dashed
-					301 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					302 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					303 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">multi_head_attention_forward<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">3 x (197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					304 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(197, 2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					305 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">transpose<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(197, 2, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-					306 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				307 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				308 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				309 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-				310 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				311 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">LayerNorm<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-				312 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				subgraph cluster_39 {
-					fontsize=12 label=MLPBlock labeljust=l style=dashed
-					313 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					314 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					315 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">GELU<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					316 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					317 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					318 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 3072)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					319 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Linear<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 3072) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					320 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:5</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-					321 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">Dropout<BR/>depth:5</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=darkseagreen1]
-					322 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:4</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
-				}
-				323 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                    <TR>
-                        <TD ROWSPAN="2">add<BR/>depth:4</TD>
-                        <TD COLSPAN="2">input:</TD>
-                        <TD COLSPAN="2">2 x (2, 197, 768) </TD>
-                    </TR>
-                    <TR>
-                        <TD COLSPAN="2">output: </TD>
-                        <TD COLSPAN="2">(2, 197, 768) </TD>
-                    </TR>
-                    </TABLE>> fillcolor=aliceblue]
-				324 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:2</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
 			}
 		}
-		325 [label=<
+		163 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -3049,13 +2239,8 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 197, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-		326 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:1</TD><TD>(2, 197, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
 	}
-	327 [label=<
+	164 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -3068,14 +2253,9 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 768) </TD>
                     </TR>
                     </TABLE>> fillcolor=aliceblue]
-	328 [label=<
-                    <TABLE BORDER="0" CELLBORDER="1"
-                    CELLSPACING="0" CELLPADDING="4">
-                        <TR><TD>hidden-tensor<BR/>depth:1</TD><TD>(2, 768)</TD></TR>
-                    </TABLE>> fillcolor=lightyellow]
 	subgraph cluster_40 {
 		fontsize=12 label=Sequential labeljust=l style=dashed
-		329 [label=<
+		165 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                     <TR>
@@ -3088,364 +2268,200 @@ strict digraph model {
                         <TD COLSPAN="2">(2, 1000) </TD>
                     </TR>
                     </TABLE>> fillcolor=darkseagreen1]
-		330 [label=<
+		166 [label=<
                     <TABLE BORDER="0" CELLBORDER="1"
                     CELLSPACING="0" CELLPADDING="4">
                         <TR><TD>output-tensor<BR/>depth:0</TD><TD>(2, 1000)</TD></TR>
                     </TABLE>> fillcolor=lightyellow]
 	}
 	0 -> 1
-	2 -> 3
 	1 -> 2
-	4 -> 5
+	2 -> 3
 	3 -> 4
-	6 -> 7
+	4 -> 5
 	5 -> 6
+	6 -> 7
+	6 -> 12
 	7 -> 8
 	8 -> 9
-	10 -> 11
 	9 -> 10
+	10 -> 11
 	11 -> 12
 	12 -> 13
-	12 -> 23
+	12 -> 19
 	13 -> 14
 	14 -> 15
-	16 -> 17
 	15 -> 16
-	18 -> 19
+	16 -> 17
 	17 -> 18
-	20 -> 21
+	18 -> 19
 	19 -> 20
-	22 -> 23
+	19 -> 25
+	20 -> 21
 	21 -> 22
-	24 -> 25
-	24 -> 37
+	22 -> 23
 	23 -> 24
+	24 -> 25
 	25 -> 26
+	25 -> 32
 	26 -> 27
-	28 -> 29
 	27 -> 28
-	30 -> 31
+	28 -> 29
 	29 -> 30
-	32 -> 33
+	30 -> 31
 	31 -> 32
-	34 -> 35
+	32 -> 33
+	32 -> 38
 	33 -> 34
-	36 -> 37
+	34 -> 35
 	35 -> 36
+	36 -> 37
 	37 -> 38
 	38 -> 39
-	38 -> 49
+	38 -> 45
 	39 -> 40
 	40 -> 41
-	42 -> 43
 	41 -> 42
-	44 -> 45
+	42 -> 43
 	43 -> 44
-	46 -> 47
+	44 -> 45
 	45 -> 46
-	48 -> 49
+	45 -> 51
+	46 -> 47
 	47 -> 48
-	50 -> 51
-	50 -> 63
+	48 -> 49
 	49 -> 50
+	50 -> 51
 	51 -> 52
+	51 -> 58
 	52 -> 53
-	54 -> 55
 	53 -> 54
-	56 -> 57
+	54 -> 55
 	55 -> 56
-	58 -> 59
+	56 -> 57
 	57 -> 58
-	60 -> 61
+	58 -> 59
+	58 -> 64
 	59 -> 60
-	62 -> 63
+	60 -> 61
 	61 -> 62
+	62 -> 63
 	63 -> 64
 	64 -> 65
-	64 -> 75
+	64 -> 71
 	65 -> 66
 	66 -> 67
-	68 -> 69
 	67 -> 68
-	70 -> 71
+	68 -> 69
 	69 -> 70
-	72 -> 73
+	70 -> 71
 	71 -> 72
-	74 -> 75
+	71 -> 77
+	72 -> 73
 	73 -> 74
-	76 -> 77
-	76 -> 89
+	74 -> 75
 	75 -> 76
+	76 -> 77
 	77 -> 78
+	77 -> 84
 	78 -> 79
-	80 -> 81
 	79 -> 80
-	82 -> 83
+	80 -> 81
 	81 -> 82
-	84 -> 85
+	82 -> 83
 	83 -> 84
-	86 -> 87
+	84 -> 85
+	84 -> 90
 	85 -> 86
-	88 -> 89
+	86 -> 87
 	87 -> 88
+	88 -> 89
 	89 -> 90
 	90 -> 91
-	90 -> 101
+	90 -> 97
 	91 -> 92
 	92 -> 93
-	94 -> 95
 	93 -> 94
-	96 -> 97
+	94 -> 95
 	95 -> 96
-	98 -> 99
+	96 -> 97
 	97 -> 98
-	100 -> 101
+	97 -> 103
+	98 -> 99
 	99 -> 100
-	102 -> 103
-	102 -> 115
+	100 -> 101
 	101 -> 102
+	102 -> 103
 	103 -> 104
+	103 -> 110
 	104 -> 105
-	106 -> 107
 	105 -> 106
-	108 -> 109
+	106 -> 107
 	107 -> 108
-	110 -> 111
+	108 -> 109
 	109 -> 110
-	112 -> 113
+	110 -> 111
+	110 -> 116
 	111 -> 112
-	114 -> 115
+	112 -> 113
 	113 -> 114
+	114 -> 115
 	115 -> 116
 	116 -> 117
-	116 -> 127
+	116 -> 123
 	117 -> 118
 	118 -> 119
-	120 -> 121
 	119 -> 120
-	122 -> 123
+	120 -> 121
 	121 -> 122
-	124 -> 125
+	122 -> 123
 	123 -> 124
-	126 -> 127
+	123 -> 129
+	124 -> 125
 	125 -> 126
-	128 -> 129
-	128 -> 141
+	126 -> 127
 	127 -> 128
+	128 -> 129
 	129 -> 130
+	129 -> 136
 	130 -> 131
-	132 -> 133
 	131 -> 132
-	134 -> 135
+	132 -> 133
 	133 -> 134
-	136 -> 137
+	134 -> 135
 	135 -> 136
-	138 -> 139
+	136 -> 137
+	136 -> 142
 	137 -> 138
-	140 -> 141
+	138 -> 139
 	139 -> 140
+	140 -> 141
 	141 -> 142
 	142 -> 143
-	142 -> 153
+	142 -> 149
 	143 -> 144
 	144 -> 145
-	146 -> 147
 	145 -> 146
-	148 -> 149
+	146 -> 147
 	147 -> 148
-	150 -> 151
+	148 -> 149
 	149 -> 150
-	152 -> 153
+	149 -> 155
+	150 -> 151
 	151 -> 152
-	154 -> 155
-	154 -> 167
+	152 -> 153
 	153 -> 154
+	154 -> 155
 	155 -> 156
+	155 -> 162
 	156 -> 157
-	158 -> 159
 	157 -> 158
-	160 -> 161
+	158 -> 159
 	159 -> 160
-	162 -> 163
+	160 -> 161
 	161 -> 162
-	164 -> 165
+	162 -> 163
 	163 -> 164
-	166 -> 167
+	164 -> 165
 	165 -> 166
-	167 -> 168
-	168 -> 169
-	168 -> 179
-	169 -> 170
-	170 -> 171
-	172 -> 173
-	171 -> 172
-	174 -> 175
-	173 -> 174
-	176 -> 177
-	175 -> 176
-	178 -> 179
-	177 -> 178
-	180 -> 181
-	180 -> 193
-	179 -> 180
-	181 -> 182
-	182 -> 183
-	184 -> 185
-	183 -> 184
-	186 -> 187
-	185 -> 186
-	188 -> 189
-	187 -> 188
-	190 -> 191
-	189 -> 190
-	192 -> 193
-	191 -> 192
-	193 -> 194
-	194 -> 195
-	194 -> 205
-	195 -> 196
-	196 -> 197
-	198 -> 199
-	197 -> 198
-	200 -> 201
-	199 -> 200
-	202 -> 203
-	201 -> 202
-	204 -> 205
-	203 -> 204
-	206 -> 207
-	206 -> 219
-	205 -> 206
-	207 -> 208
-	208 -> 209
-	210 -> 211
-	209 -> 210
-	212 -> 213
-	211 -> 212
-	214 -> 215
-	213 -> 214
-	216 -> 217
-	215 -> 216
-	218 -> 219
-	217 -> 218
-	219 -> 220
-	220 -> 221
-	220 -> 231
-	221 -> 222
-	222 -> 223
-	224 -> 225
-	223 -> 224
-	226 -> 227
-	225 -> 226
-	228 -> 229
-	227 -> 228
-	230 -> 231
-	229 -> 230
-	232 -> 233
-	232 -> 245
-	231 -> 232
-	233 -> 234
-	234 -> 235
-	236 -> 237
-	235 -> 236
-	238 -> 239
-	237 -> 238
-	240 -> 241
-	239 -> 240
-	242 -> 243
-	241 -> 242
-	244 -> 245
-	243 -> 244
-	245 -> 246
-	246 -> 247
-	246 -> 257
-	247 -> 248
-	248 -> 249
-	250 -> 251
-	249 -> 250
-	252 -> 253
-	251 -> 252
-	254 -> 255
-	253 -> 254
-	256 -> 257
-	255 -> 256
-	258 -> 259
-	258 -> 271
-	257 -> 258
-	259 -> 260
-	260 -> 261
-	262 -> 263
-	261 -> 262
-	264 -> 265
-	263 -> 264
-	266 -> 267
-	265 -> 266
-	268 -> 269
-	267 -> 268
-	270 -> 271
-	269 -> 270
-	271 -> 272
-	272 -> 273
-	272 -> 283
-	273 -> 274
-	274 -> 275
-	276 -> 277
-	275 -> 276
-	278 -> 279
-	277 -> 278
-	280 -> 281
-	279 -> 280
-	282 -> 283
-	281 -> 282
-	284 -> 285
-	284 -> 297
-	283 -> 284
-	285 -> 286
-	286 -> 287
-	288 -> 289
-	287 -> 288
-	290 -> 291
-	289 -> 290
-	292 -> 293
-	291 -> 292
-	294 -> 295
-	293 -> 294
-	296 -> 297
-	295 -> 296
-	297 -> 298
-	298 -> 299
-	298 -> 309
-	299 -> 300
-	300 -> 301
-	302 -> 303
-	301 -> 302
-	304 -> 305
-	303 -> 304
-	306 -> 307
-	305 -> 306
-	308 -> 309
-	307 -> 308
-	310 -> 311
-	310 -> 323
-	309 -> 310
-	311 -> 312
-	312 -> 313
-	314 -> 315
-	313 -> 314
-	316 -> 317
-	315 -> 316
-	318 -> 319
-	317 -> 318
-	320 -> 321
-	319 -> 320
-	322 -> 323
-	321 -> 322
-	324 -> 325
-	323 -> 324
-	326 -> 327
-	325 -> 326
-	327 -> 328
-	328 -> 329
-	329 -> 330
 }

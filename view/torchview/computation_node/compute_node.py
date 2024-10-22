@@ -30,7 +30,7 @@ class TensorNode(Node):
         super(TensorNode, self).__init__(
             depth, parents, children, name,
         )
-        self.tensor_id = id(tensor)
+        self.tensor_id = id(tensor) # unique identifier of tensor in memory
         self.tensor_shape = tuple(tensor.shape)
         self.name = name
         self.is_aux = is_aux
