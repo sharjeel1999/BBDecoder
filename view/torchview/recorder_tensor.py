@@ -109,6 +109,7 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
         input_nodes: NodeContainer[TensorNode] = (
             reduce_data_info([args, kwargs], collect_tensor_node, NodeContainer())
         )
+        print('input nodes: ', input_nodes)
         # get unique input tensors, prevent duplications for auxiliary nodes
         input_recorder: OrderedSet[RecorderTensor] = (
             reduce_data_info([args, kwargs], collect_tensor, OrderedSet())
@@ -120,9 +121,11 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
 
         # Create module_node and connect to its parents tensor node
         cur_depth = next(iter(input_nodes)).depth
+        cur_ind = model_graph.unique_ind_tracker['current_index']
+        # print('cur depth/ind: ', cur_depth, cur_ind)
         input_context = next(iter(input_nodes)).context ################################################################ setting depth to ModuleNode
         cur_node = ModuleNode(
-            mod, cur_depth, input_nodes,  # type: ignore[arg-type]
+            mod, cur_depth, cur_ind, input_nodes,  # type: ignore[arg-type]
             name=type(mod).__name__
         )
         cur_node.set_input_shape(
@@ -132,13 +135,14 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
         # update context with current modules's context
         input_context.append({cur_node: []})
         for node in input_nodes:
+            print('current node: ', cur_node)
             node.add_child(cur_node)
 
         tensor_to_node: dict[RecorderTensor, TensorNode] = (
             reduce_data_info([args, kwargs], collect_tensor_node_id_dict, {})
         )
         attach_kwargs = {
-            'parents': cur_node, 'depth': cur_depth+1,
+            'parents': cur_node, 'depth': cur_depth+1, 'ind': cur_ind+1,
             'context': input_context[-1][cur_node], 'is_aux': True,
             'name': 'auxiliary-tensor'
         }
@@ -149,6 +153,9 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
 
         model_graph.context_tracker['current_depth'] = cur_depth+1
         model_graph.context_tracker['current_context'] = input_context[-1][cur_node]
+
+        model_graph.unique_ind_tracker['current_index'] = cur_ind + 1
+        print('-- check current ind: ', model_graph.unique_ind_tracker['current_index'])
 
         # TODO: check if output contains RecorderTensor
         # this seems not to be necessary so far
@@ -257,12 +264,13 @@ class RecorderTensor(torch.Tensor):
 
         # Create function_node and connect to its parents tensor node
         cur_depth = next(iter(args_nodes)).depth
+        cur_ind = next(iter(args_nodes)).ind
         input_context = next(iter(args_nodes)).context
         func_name = (
             func.name if isinstance(func, ScriptMethod) else func.__name__
         )
         cur_node = FunctionNode(
-            func, cur_depth, args_nodes, name=func_name  # type: ignore[arg-type]
+            func, cur_depth, cur_ind, args_nodes, name=func_name  # type: ignore[arg-type]
         )
 
         for i in args_nodes:
@@ -270,7 +278,7 @@ class RecorderTensor(torch.Tensor):
 
         input_context.append(cur_node)
         attach_kwargs = {
-            'parents': cur_node, 'depth': cur_depth, "context": input_context,
+            'parents': cur_node, 'depth': cur_depth, 'ind': cur_ind, "context": input_context,
             'is_aux': False, 'parent_hierarchy': {cur_depth: cur_node},
             'name': 'output-tensor' if cur_depth == 0 else 'hidden-tensor'
         }
@@ -344,6 +352,7 @@ def attach_node(
             key_word: value
             for key_word, value in kwargs.items() if key_word != 'tensor_to_node'
         }
+        #print('all kwargs: ', new_kwargs)
         tensor_node = TensorNode(
             tensor=recorded_tensor,
             **new_kwargs

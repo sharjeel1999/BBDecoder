@@ -98,6 +98,7 @@ class ComputationGraph:
         graphviz graphs. This is especially important for output tests
         '''
         self.context_tracker = {'current_context': [], 'current_depth': 0}
+        self.unique_ind_tracker = {'current_index': 0}
         self.running_node_id: int = 0
         self.running_subgraph_id: int = 0
         self.id_dict: dict[str, int] = {}
@@ -105,7 +106,7 @@ class ComputationGraph:
         self.edge_list: list[tuple[COMPUTATION_NODES, COMPUTATION_NODES]] = []
 
         # module node  to capture whole graph
-        main_container_module = ModuleNode(Identity(), -1)
+        main_container_module = ModuleNode(Identity(), -1, -1)
         main_container_module.is_container = False
         self.subgraph_dict: dict[str, int] = {main_container_module.node_id: 0}
         self.running_subgraph_id += 1
@@ -193,7 +194,7 @@ class ComputationGraph:
         in graphviz graph)'''
 
         cur_node = kwargs['cur_node']
-        print('current node: ', cur_node)
+        #print('current node: ', cur_node)
         # if tensor node is traced, dont repeat collecting
         # if node is isolated, dont record it
         is_isolated = cur_node.is_root() and cur_node.is_leaf()
@@ -207,7 +208,7 @@ class ComputationGraph:
             subgraph = kwargs['subgraph']
             #print('sub graph: ', subgraph)
             if isinstance(cur_node, (FunctionNode, ModuleNode)):
-                print('function or module cur_node: ', cur_node)
+                #print('function or module cur_node: ', cur_node)
                 if self.roll:
                     self.rollify(cur_node)
                 self.add_node(cur_node, subgraph) # details should be in cur_node

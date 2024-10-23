@@ -392,9 +392,10 @@ def get_recorder_tensor(
     input_recorder_tensor: RecorderTensor = input_tensor.as_subclass(RecorderTensor)
     input_recorder_tensor.tensor_nodes = []
     input_node = TensorNode(
-        tensor=input_recorder_tensor,
-        depth=0,
-        name='input-tensor',
+        tensor = input_recorder_tensor,
+        depth = 0,
+        ind = 0,
+        name = 'input-tensor',
     )
 
     input_recorder_tensor.tensor_nodes.append(input_node)

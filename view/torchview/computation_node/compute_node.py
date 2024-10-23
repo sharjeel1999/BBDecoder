@@ -18,6 +18,7 @@ class TensorNode(Node):
         self,
         tensor: torch.Tensor,
         depth: int,
+        ind:int,
         parents: NodeContainer[Node] | Node | None = None,
         children: NodeContainer[Node] | Node | None = None,
         name: str = 'tensor',
@@ -28,7 +29,7 @@ class TensorNode(Node):
     ):
 
         super(TensorNode, self).__init__(
-            depth, parents, children, name,
+            depth, ind, parents, children, name,
         )
         self.tensor_id = id(tensor) # unique identifier of tensor in memory
         self.tensor_shape = tuple(tensor.shape)
@@ -56,14 +57,16 @@ class ModuleNode(Node):
         self,
         module_unit: nn.Module,
         depth: int,
+        ind: int,
         parents: NodeContainer[Node] | Node | None = None,
         children: NodeContainer[Node] | Node | None = None,
         name: str = 'module-node',
         output_nodes: NodeContainer[Node] | None = None,
     ) -> None:
         super(ModuleNode, self).__init__(
-            depth, parents, children, name
+            depth = depth, ind = ind, parents = parents, children = children, name = name
         )
+        
         self.compute_unit_id = id(module_unit)
         self.is_activation = is_generator_empty(module_unit.parameters())
         self.is_container = not any(module_unit.children())
@@ -107,12 +110,13 @@ class FunctionNode(Node):
         self,
         function_unit: Callable[..., Any],
         depth: int,
+        ind: int,
         parents: NodeContainer[Node] | Node | None = None,
         children: NodeContainer[Node] | Node | None = None,
         name: str = 'function-node',
     ) -> None:
         super(FunctionNode, self).__init__(
-            depth, parents, children, name
+            depth = depth, ind = ind, parents = parents, children = children, name = name
         )
         self.compute_unit_id = id(function_unit)
         self.is_container = True

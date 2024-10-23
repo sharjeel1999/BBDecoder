@@ -26,6 +26,7 @@ class Node:
     def __init__(
         self,
         depth: int,
+        ind: int,
         parents: NodeContainer[Node] | Node | None = None,
         children: NodeContainer[Node] | Node | None = None,
         name: str = 'node',
@@ -47,6 +48,7 @@ class Node:
 
         self.name = name
         self.depth = depth
+        self.ind = ind
         self.node_id = 'null'
 
     def __str__(self) -> str:
