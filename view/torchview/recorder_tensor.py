@@ -105,11 +105,11 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
         Construct Module Node => forward-prop => process output nodes to retain
         module hierarchy correctly
         '''
-        # Create module node and connect to its parents tensor node
+        # Create module node and connect to its parents tensor node, uses collect_tensor_node to add data in first argument into NodeContainer()
         input_nodes: NodeContainer[TensorNode] = (
             reduce_data_info([args, kwargs], collect_tensor_node, NodeContainer())
         )
-        print('input nodes: ', input_nodes)
+
         # get unique input tensors, prevent duplications for auxiliary nodes
         input_recorder: OrderedSet[RecorderTensor] = (
             reduce_data_info([args, kwargs], collect_tensor, OrderedSet())
@@ -134,8 +134,9 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
 
         # update context with current modules's context
         input_context.append({cur_node: []})
+        
         for node in input_nodes:
-            print('current node: ', cur_node)
+            print('child node: ', cur_node)
             node.add_child(cur_node)
 
         tensor_to_node: dict[RecorderTensor, TensorNode] = (
@@ -147,6 +148,7 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
             'name': 'auxiliary-tensor'
         }
 
+        # ----------------------------------- from here --------------------------------------------------
         traverse_data_inplace(
             input_recorder, attach_node(attach_kwargs, tensor_to_node)
         )
@@ -154,6 +156,7 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
         model_graph.context_tracker['current_depth'] = cur_depth+1
         model_graph.context_tracker['current_context'] = input_context[-1][cur_node]
 
+        print('-- increment node name: ', cur_node, cur_ind)
         model_graph.unique_ind_tracker['current_index'] = cur_ind + 1
         print('-- check current ind: ', model_graph.unique_ind_tracker['current_index'])
 
