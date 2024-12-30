@@ -7,6 +7,21 @@ from torch.nn.parameter import Parameter
 
 T = TypeVar('T')
 
+'''
+Example of MutableSet
+
+from typing import MutableSet
+
+def add_elements(s: MutableSet[int], elements: list[int]) -> None:
+    for element in elements:
+        s.add(element)
+
+# Example usage
+my_set: MutableSet[int] = {1, 2, 3}
+add_elements(my_set, [4, 5])
+print(my_set)  # Output: {1, 2, 3, 4, 5}
+
+'''
 
 class OrderedSet(MutableSet[T]):
     '''Ordered set using mutableset. This is necessary for having reproducible
@@ -16,7 +31,7 @@ class OrderedSet(MutableSet[T]):
     def __init__(self, iterable: Any | None = None) -> None:
         self.map: dict[T, None] = {}
         if iterable is not None:
-            self |= iterable
+            self |= iterable #  |= is the inplace operator 
 
     def __len__(self) -> int:
         return len(self.map)

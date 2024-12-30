@@ -112,6 +112,7 @@ class ComputationGraph:
         self.running_subgraph_id += 1
 
         # Add input nodes
+        # Root container is the container with the input information
         self.node_hierarchy = {
             main_container_module: list(self.root_container)
         }
@@ -150,6 +151,7 @@ class ComputationGraph:
         cur_subgraph = (
             self.visual_graph if kwargs['subgraph'] is None else kwargs['subgraph']
         )
+        print('--- Entered traverse graph ---')
         assert_input_type(
             'traverse_graph', (TensorNode, ModuleNode, FunctionNode, dict), cur_node
         )
@@ -159,7 +161,9 @@ class ComputationGraph:
             return
 
         if isinstance(cur_node, dict):
-            k, v = list(cur_node.items())[0]
+            k, v = list(cur_node.items())[0] # key, value = dictionary.items()
+            print('node hierarchy keys: ', k) # k = layer name
+            print('node hierarchy values: ', v)
             new_kwargs = updated_dict(kwargs, 'cur_node', k)
             if k.depth <= self.depth and k.depth >= 0:
                 action_fn(**new_kwargs)

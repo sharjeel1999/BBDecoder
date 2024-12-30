@@ -19,6 +19,7 @@ class TensorNode(Node):
         tensor: torch.Tensor,
         depth: int,
         ind:int,
+        trainable: bool = False
         parents: NodeContainer[Node] | Node | None = None,
         children: NodeContainer[Node] | Node | None = None,
         name: str = 'tensor',
