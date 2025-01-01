@@ -116,14 +116,14 @@ class ComputationGraph:
         self.node_hierarchy = {
             main_container_module: list(self.root_container)
         }
-        print(self.node_hierarchy)
-        print('--------------------------------')
+        # print(self.node_hierarchy)
+        # print('--------------------------------')
         for root_node in self.root_container:
             root_node.context = self.node_hierarchy[main_container_module]
 
     def fill_visual_graph(self) -> None:
         '''Fills the graphviz graph with desired nodes and edges.'''
-
+        # print('--------- entered fill visual graph -------')
         self.render_nodes()
         self.render_edges()
         self.resize_graph()
@@ -151,7 +151,7 @@ class ComputationGraph:
         cur_subgraph = (
             self.visual_graph if kwargs['subgraph'] is None else kwargs['subgraph']
         )
-        print('--- Entered traverse graph ---')
+        # print('--- Entered traverse graph ---')
         assert_input_type(
             'traverse_graph', (TensorNode, ModuleNode, FunctionNode, dict), cur_node
         )
@@ -162,9 +162,10 @@ class ComputationGraph:
 
         if isinstance(cur_node, dict):
             k, v = list(cur_node.items())[0] # key, value = dictionary.items()
-            print('node hierarchy keys: ', k) # k = layer name
-            print('node hierarchy values: ', v)
+            # print('node hierarchy keys: ', k) # k = layer name
+            # print('node hierarchy values: ', v)
             new_kwargs = updated_dict(kwargs, 'cur_node', k)
+            # print('k depth, ind and trainable: ', k.depth, k.ind, k.trainable)
             if k.depth <= self.depth and k.depth >= 0:
                 action_fn(**new_kwargs)
 
@@ -197,8 +198,10 @@ class ComputationGraph:
         properties e.g. if rolled recursive nodes are given the same node name
         in graphviz graph)'''
 
+        # print('------ entered collect graph ------')
         cur_node = kwargs['cur_node']
-        #print('current node: ', cur_node)
+        k, v = list(cur_node.list())[0]
+        # print('collected: ', k, cur_node.depth, cur_node.ind, cur_node.trainable)
         # if tensor node is traced, dont repeat collecting
         # if node is isolated, dont record it
         is_isolated = cur_node.is_root() and cur_node.is_leaf()

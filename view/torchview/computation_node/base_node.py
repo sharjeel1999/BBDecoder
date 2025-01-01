@@ -27,6 +27,7 @@ class Node:
         self,
         depth: int,
         ind: int,
+        trainable: bool = False,
         parents: NodeContainer[Node] | Node | None = None,
         children: NodeContainer[Node] | Node | None = None,
         name: str = 'node',
@@ -49,6 +50,7 @@ class Node:
         self.name = name
         self.depth = depth
         self.ind = ind
+        self.trainable = trainable
         self.node_id = 'null'
 
     def __str__(self) -> str:

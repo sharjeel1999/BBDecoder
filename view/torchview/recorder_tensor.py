@@ -136,7 +136,7 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
         input_context.append({cur_node: []})
         
         for node in input_nodes:
-            print('child node: ', cur_node)
+            # print('child node: ', cur_node)
             node.add_child(cur_node)
 
         tensor_to_node: dict[RecorderTensor, TensorNode] = (
@@ -156,9 +156,9 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
         model_graph.context_tracker['current_depth'] = cur_depth+1
         model_graph.context_tracker['current_context'] = input_context[-1][cur_node]
 
-        print('-- increment node name: ', cur_node, cur_ind)
+        # print('-- increment node name: ', cur_node, cur_ind)
         model_graph.unique_ind_tracker['current_index'] = cur_ind + 1
-        print('-- check current ind: ', model_graph.unique_ind_tracker['current_index'])
+        # print('-- check current ind: ', model_graph.unique_ind_tracker['current_index'])
 
         # TODO: check if output contains RecorderTensor
         # this seems not to be necessary so far
