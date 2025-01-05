@@ -217,7 +217,7 @@ def draw_graph(
         hide_inner_tensors, hide_module_functions, roll, depth
     ) # add the empty graph with the computation graph
 
-    print('input record tensor: ', len(input_recorder_tensor), input_recorder_tensor[0].depth, input_recorder_tensor[0].ind, input_recorder_tensor[0].trainable)
+    #print('input record tensor: ', len(input_recorder_tensor), input_recorder_tensor[0].depth, input_recorder_tensor[0].ind, input_recorder_tensor[0].trainable)
     forward_prop(
         model, input_recorder_tensor, device, model_graph,
         model_mode, **kwargs_record_tensor

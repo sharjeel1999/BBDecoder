@@ -96,6 +96,7 @@ def creation_ops_wrapper(
     return _func
 
 
+
 def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]: # This returns the inner function that is recallable
     '''Wrapper for forward functions of modules'''
     '''When you call the outer function function_1, it will define function_2 and return the function object itself,
@@ -105,6 +106,13 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
         Construct Module Node => forward-prop => process output nodes to retain
         module hierarchy correctly
         '''
+        def check_trainable(mod: nn.Module):
+            for param in mod.parameters():
+                if param.requires_grad:
+                    return True
+            return False
+        
+        
         # Create module node and connect to its parents tensor node, uses collect_tensor_node to add data in first argument into NodeContainer()
         input_nodes: NodeContainer[TensorNode] = (
             reduce_data_info([args, kwargs], collect_tensor_node, NodeContainer())
@@ -123,6 +131,7 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
         cur_depth = next(iter(input_nodes)).depth
         cur_ind = model_graph.unique_ind_tracker['current_index']
         # print('cur depth/ind: ', cur_depth, cur_ind)
+
         input_context = next(iter(input_nodes)).context ################################################################ setting depth to ModuleNode
         cur_node = ModuleNode(
             mod, cur_depth, cur_ind, input_nodes,  # type: ignore[arg-type]
@@ -142,8 +151,16 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
         tensor_to_node: dict[RecorderTensor, TensorNode] = (
             reduce_data_info([args, kwargs], collect_tensor_node_id_dict, {})
         )
+        
+        if check_trainable(mod):
+            upd_ind = cur_ind + 1
+            print('True module: ', mod)
+        else:
+            upd_ind = 0
+            print('False module: ', mod)
+
         attach_kwargs = {
-            'parents': cur_node, 'depth': cur_depth+1, 'ind': cur_ind+1,
+            'parents': cur_node, 'depth': cur_depth+1, 'ind': upd_ind,
             'context': input_context[-1][cur_node], 'is_aux': True,
             'name': 'auxiliary-tensor'
         }
@@ -153,12 +170,16 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
             input_recorder, attach_node(attach_kwargs, tensor_to_node)
         )
 
-        model_graph.context_tracker['current_depth'] = cur_depth+1
+        # model_graph.context_tracker['current_depth'] = cur_depth+1
         model_graph.context_tracker['current_context'] = input_context[-1][cur_node]
-
         # print('-- increment node name: ', cur_node, cur_ind)
-        model_graph.unique_ind_tracker['current_index'] = cur_ind + 1
-        # print('-- check current ind: ', model_graph.unique_ind_tracker['current_index'])
+
+        # if check_trainable(mod):
+        # print('module: ', mod)
+        # model_graph.unique_ind_tracker['current_index'] = cur_ind + 1
+        # else:
+            # model_graph.unique_ind_tracker['current_index'] = 0
+        
 
         # TODO: check if output contains RecorderTensor
         # this seems not to be necessary so far

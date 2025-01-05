@@ -200,7 +200,7 @@ class ComputationGraph:
 
         # print('------ entered collect graph ------')
         cur_node = kwargs['cur_node']
-        k, v = list(cur_node.list())[0]
+        #k, v = list(cur_node.list())[0]
         # print('collected: ', k, cur_node.depth, cur_node.ind, cur_node.trainable)
         # if tensor node is traced, dont repeat collecting
         # if node is isolated, dont record it
