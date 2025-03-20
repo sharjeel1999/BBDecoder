@@ -1,0 +1,7 @@
+digraph ComputationGraph {
+	graph [rankdir=TB]
+	node [fontcolor=black shape=box style=filled]
+	node_0 [label=Input]
+	node_1 [label=Output]
+	node_1 -> node_1
+}

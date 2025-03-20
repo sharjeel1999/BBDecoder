@@ -1,5 +1,10 @@
 from graphviz import Digraph
 
+from graphviz import Digraph
+import inspect
+import dis
+
+
 def create_graphviz_graph(model, input_tensor):
     visual_graph = Digraph(
         name="ComputationGraph",
