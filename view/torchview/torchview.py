@@ -226,6 +226,8 @@ def draw_graph(
 
     model_graph.fill_visual_graph()
 
+    print(model_graph)
+
     if save_graph:
         model_graph.visual_graph.render(format='png')
     return model_graph

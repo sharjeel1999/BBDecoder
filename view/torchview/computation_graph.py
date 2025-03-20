@@ -198,8 +198,12 @@ class ComputationGraph:
         properties e.g. if rolled recursive nodes are given the same node name
         in graphviz graph)'''
 
-        # print('------ entered collect graph ------')
+        print('------ entered collect graph ------')
         cur_node = kwargs['cur_node']
+        # print('cur node: ', cur_node)
+        # if str(cur_node) == 'Main_wrapper':
+        #     print('name: ', cur_node.name)
+        #     print('index: ', cur_node.index)
         #k, v = list(cur_node.list())[0]
         # print('collected: ', k, cur_node.depth, cur_node.ind, cur_node.trainable)
         # if tensor node is traced, dont repeat collecting

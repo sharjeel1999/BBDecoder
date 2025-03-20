@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 
-
 class Main_wrapper(nn.Module):
     def __init__(self, layer: nn.Module, name, index):
         super().__init__()
@@ -13,3 +12,4 @@ class Main_wrapper(nn.Module):
 
     def forward(self, x):
         return self.main_layer(x)
+    

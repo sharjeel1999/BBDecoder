@@ -28,6 +28,9 @@ class SimpleCNN(nn.Module):
         return x
 
 
+from view.torchview import draw_graph
+from torchviz import make_dot
+from visualizer import create_graphviz_graph
 
 if __name__ == "__main__":
     model = SimpleCNN(num_classes=10)
@@ -43,8 +46,19 @@ if __name__ == "__main__":
             Main_wrapper(module)
 
     print(model)
+    # model_graph = draw_graph(model, input_size = (4, 1, 28, 28), expand_nested = True, save_graph = True, depth = 4, hide_inner_tensors=True)
+    # model_graph.visual_graph
 
     x = torch.randn(4, 1, 28, 28)
+    create_graphviz_graph(model, x)
     
-    outputs = model(x)
-    print("Output shape:", outputs.shape)
+    # outputs = model(x)
+    # print("Output shape:", outputs.shape)
+
+    # graph = make_dot(outputs, params = dict(model.named_parameters()), show_attrs=False, show_saved=False)
+    # for node in graph.node:
+    #     if "self.index" in node.attr:
+    #         node.attr["label"] += f"\n(Index: {node.attr['self.index']})"
+
+    # Save or render the graph
+    # graph.render("computation_graph", format="png", cleanup=True)
