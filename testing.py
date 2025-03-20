@@ -30,7 +30,7 @@ class SimpleCNN(nn.Module):
 
 from view.torchview import draw_graph
 from torchviz import make_dot
-from visualizer import create_graphviz_graph
+from visualizer import create_graphviz_graph, list_layers
 
 if __name__ == "__main__":
     model = SimpleCNN(num_classes=10)
@@ -48,6 +48,9 @@ if __name__ == "__main__":
     print(model)
     # model_graph = draw_graph(model, input_size = (4, 1, 28, 28), expand_nested = True, save_graph = True, depth = 4, hide_inner_tensors=True)
     # model_graph.visual_graph
+
+    print('---------------------------------')
+    list_layers(model)
 
     x = torch.randn(4, 1, 28, 28)
     # create_graphviz_graph(model, x)
