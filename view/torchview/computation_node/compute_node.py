@@ -19,6 +19,7 @@ class TensorNode(Node):
         tensor: torch.Tensor,
         depth: int,
         ind:int,
+        trainable: bool = False,
         parents: NodeContainer[Node] | Node | None = None,
         children: NodeContainer[Node] | Node | None = None,
         name: str = 'tensor',
@@ -29,7 +30,7 @@ class TensorNode(Node):
     ):
 
         super(TensorNode, self).__init__(
-            depth, ind, parents, children, name,
+            depth, ind, trainable, parents, children, name,
         )
         self.tensor_id = id(tensor) # unique identifier of tensor in memory
         self.tensor_shape = tuple(tensor.shape)

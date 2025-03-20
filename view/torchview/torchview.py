@@ -217,10 +217,12 @@ def draw_graph(
         hide_inner_tensors, hide_module_functions, roll, depth
     ) # add the empty graph with the computation graph
 
+    #print('input record tensor: ', len(input_recorder_tensor), input_recorder_tensor[0].depth, input_recorder_tensor[0].ind, input_recorder_tensor[0].trainable)
     forward_prop(
         model, input_recorder_tensor, device, model_graph,
         model_mode, **kwargs_record_tensor
-    )
+    ) # all layer depths and indexes are calculated in this forward prop function
+    
 
     model_graph.fill_visual_graph()
 
@@ -251,7 +253,7 @@ def forward_prop(
             )
         new_module_forward = module_forward_wrapper(model_graph)
         # _orig_module_forward is just equal to torch.nn.Module.__call__
-        with Recorder(_orig_module_forward, new_module_forward, model_graph): # this is when the __enter__ function is called, and the __exit__ function is called when this ends.
+        with Recorder(_orig_module_forward, new_module_forward, model_graph): # this triggers the call of the __enter__ function, and the __exit__ function is called when this ends.
             with torch.no_grad():
                 if isinstance(x, (list, tuple)):
                     _ = model.to(device)(*x, **kwargs)
