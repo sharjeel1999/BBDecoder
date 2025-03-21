@@ -1,1 +1,1 @@
-from wrappers.wrapper import Main_wrapper
+from .wrapper import Main_wrapper

@@ -1,8 +1,21 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
-def plot_grad_flow(named_parameters, layer_inds):
+class GradAnalyzer():
+    def __init__(self):
+        pass
+    def check_grads(self):
+        for name, module in self.model.named_children():
+            print(f"Layer Index: {module.index}, Layer Name: {module.name}")
+            if module.index in self.layer_inds:
+                for n, p in module.named_parameters():
+                    print('named parameters: ', n)
+                    print('parameters shape: ', p.shape)
+
+
+def plot_grad_flow(named_parameters, layer_inds, folder_path):
     '''Plots the gradients flowing through different layers in the net during training.
     Can be used for checking for possible gradient vanishing / exploding problems.
     
@@ -19,7 +32,9 @@ def plot_grad_flow(named_parameters, layer_inds):
     max_grads= []
     layers = []
     for n, p in named_parameters:
-        # print(n)
+        print('named parameters: ', n)
+        # print('parameters: ', p)
+        print('parameters name/index: ', p.name, p.index)
         if(p.requires_grad) and ("bias" not in n):
             try:
                 layers.append(n)
@@ -28,6 +43,7 @@ def plot_grad_flow(named_parameters, layer_inds):
             except:
                 ave_grads.append(0)
                 max_grads.append(0)
+
     plt.bar(np.arange(len(max_grads)), max_grads, alpha=0.1, lw=1, color="c")
     plt.bar(np.arange(len(max_grads)), ave_grads, alpha=0.1, lw=1, color="b")
     plt.hlines(0, 0, len(ave_grads)+1, lw=2, color="k" )
@@ -42,4 +58,5 @@ def plot_grad_flow(named_parameters, layer_inds):
                 Line2D([0], [0], color="b", lw=4),
                 Line2D([0], [0], color="k", lw=4)], ['max-gradient', 'mean-gradient', 'zero-gradient'])
     
-    plt.savefig('Grad_graph.png')
+    save_path = os.path.join(folder_path, 'Grad_graph.png')
+    plt.savefig(save_path)

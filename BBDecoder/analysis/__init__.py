@@ -1,1 +1,1 @@
-from grad import plot_grad_flow
+from .grad import plot_grad_flow, GradAnalyzer

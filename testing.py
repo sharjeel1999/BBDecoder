@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from wrappers import Main_wrapper
 
 # Define the CNN architecture
 class SimpleCNN(nn.Module):
@@ -27,33 +26,56 @@ class SimpleCNN(nn.Module):
         x = self.fc2(x)
         return x
 
+from BBDecoder import Master_analyzer
+from torch.optim import Adam
 
-from view.torchview import draw_graph
-from torchviz import make_dot
-from visualizer import create_graphviz_graph, list_layers
+save_path = 'save_folder'
+model = SimpleCNN(num_classes=10)
+wrapped_model = Master_analyzer(model,
+                                optimizer = Adam(model.parameters()),
+                                save_folder = save_path,
+                                layer_inds = [0,1,2,3,4],
+                                grad_flag = True, function_flag = False)
 
-if __name__ == "__main__":
-    model = SimpleCNN(num_classes=10)
-    print(model)
 
-    for z, (name, module) in enumerate(model.named_children()):
-        # Check if the module is a leaf node (e.g., a layer like nn.Linear)
-        if isinstance(module, nn.Module) and not list(module.children()):  
-            # Replace the layer with its wrapped version
-            setattr(model, name, Main_wrapper(module, name, z))
-        else:
-            # Recursively wrap layers in submodules (if any)
-            Main_wrapper(module)
-
-    print(model)
-    # model_graph = draw_graph(model, input_size = (4, 1, 28, 28), expand_nested = True, save_graph = True, depth = 4, hide_inner_tensors=True)
-    # model_graph.visual_graph
-
-    print('---------------------------------')
-    list_layers(model)
-
+## Testing using a dummy dataset
+Epochs = 10
+for epoch in range(Epochs):
+    print('Epoch: ', epoch)
     x = torch.randn(4, 1, 28, 28)
-    # create_graphviz_graph(model, x)
+    y = wrapped_model.forward_propagation(x)
+    loss = torch.sum(y)
+    wrapped_model.backward_propagation(loss)
+    print('Loss: ', loss)
+
+
+
+# from view.torchview import draw_graph
+# from torchviz import make_dot
+# from visualizer import create_graphviz_graph, list_layers
+
+# if __name__ == "__main__":
+#     model = SimpleCNN(num_classes=10)
+#     print(model)
+
+#     for z, (name, module) in enumerate(model.named_children()):
+#         # Check if the module is a leaf node (e.g., a layer like nn.Linear)
+#         if isinstance(module, nn.Module) and not list(module.children()):  
+#             # Replace the layer with its wrapped version
+#             setattr(model, name, Main_wrapper(module, name, z))
+#         else:
+#             # Recursively wrap layers in submodules (if any)
+#             Main_wrapper(module)
+
+#     print(model)
+#     # model_graph = draw_graph(model, input_size = (4, 1, 28, 28), expand_nested = True, save_graph = True, depth = 4, hide_inner_tensors=True)
+#     # model_graph.visual_graph
+
+#     print('---------------------------------')
+#     list_layers(model)
+
+#     x = torch.randn(4, 1, 28, 28)
+#     # create_graphviz_graph(model, x)
     
-    outputs = model(x)
-    print("Output shape:", outputs.shape)
+#     outputs = model(x)
+#     print("Output shape:", outputs.shape)
