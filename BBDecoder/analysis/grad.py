@@ -7,11 +7,28 @@ class GradAnalyzer():
     def __init__(self):
         pass
 
+    def generate_hist(self, p, index):
+        if p.grad is not None:
+            gradients = p.grad.cpu().numpy().flatten()
+            plt.figure()
+            plt.hist(gradients, bins = 50)
+            plt.title(f"Gradient Histogram - {index}")
+            plt.xlabel("Gradient Value")
+            plt.ylabel("Frequency")
+            plt.grid(True)
+
+            save_path = os.path.join(self.save_folder, f"histograms/grad_hist_{index}.png")
+            plt.savefig(save_path)
+            plt.close()  # Close the plot to prevent overlapping
+        else:
+            print(f"No gradients available for layer: {index}")
+
     def check_grads(self):
         ave_grads = []
         max_grads= []
         layers = []
         for name, module in self.model.named_children():
+
             if module.index in self.layer_inds:
                 for n, p in module.named_parameters():
                     if(p.requires_grad) and ("bias" not in n):
@@ -19,6 +36,8 @@ class GradAnalyzer():
                             layers.append(n)
                             ave_grads.append(p.grad.abs().mean().item())
                             max_grads.append(p.grad.abs().max().item())
+                            if self.grad_hist_flag:
+                                self.generate_hist(p, module.index)
                         except:
                             ave_grads.append(0)
                             max_grads.append(0)
@@ -40,6 +59,10 @@ class GradAnalyzer():
 
         save_path = os.path.join(self.save_folder, 'Grad_graph.png')
         plt.savefig(save_path)
+
+
+
+
 
 
 def plot_grad_flow(named_parameters, layer_inds, folder_path):

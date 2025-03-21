@@ -10,11 +10,13 @@ class Master_analyzer(GradAnalyzer):
                  save_folder,
                  layer_inds = None,
                  grad_flag = False,
+                 grad_hist_flag = False,
                  function_flag = False,
                  ):
         """
         model: Model to be analyzed.
         optimizer: Optimizer used to train the model.
+        save_folder: Folder to save all results and plots.
         layer_inds: List of indices of the layers to be analyzed.
         grad_flag: Flag to plot the gradient flow.
         function_flag: Flag to plot the function flow.
@@ -25,8 +27,8 @@ class Master_analyzer(GradAnalyzer):
         self.save_folder = save_folder
         self.layer_inds = layer_inds
         self.grad_flag = grad_flag
+        self.grad_hist_flag = grad_hist_flag
         self.function_flag = function_flag
-
 
         print('----- List of layer and their indices -----')
         self.wrap_layers()
