@@ -6,13 +6,40 @@ from matplotlib.lines import Line2D
 class GradAnalyzer():
     def __init__(self):
         pass
+
     def check_grads(self):
+        ave_grads = []
+        max_grads= []
+        layers = []
         for name, module in self.model.named_children():
-            print(f"Layer Index: {module.index}, Layer Name: {module.name}")
             if module.index in self.layer_inds:
                 for n, p in module.named_parameters():
-                    print('named parameters: ', n)
-                    print('parameters shape: ', p.shape)
+                    if(p.requires_grad) and ("bias" not in n):
+                        try:
+                            layers.append(n)
+                            ave_grads.append(p.grad.abs().mean().item())
+                            max_grads.append(p.grad.abs().max().item())
+                        except:
+                            ave_grads.append(0)
+                            max_grads.append(0)
+
+        plt.bar(np.arange(len(max_grads)), max_grads, alpha=0.1, lw=1, color="c")
+        plt.bar(np.arange(len(max_grads)), ave_grads, alpha=0.1, lw=1, color="b")
+        plt.hlines(0, 0, len(ave_grads)+1, lw=2, color="k" )
+        plt.xticks(range(0,len(ave_grads), 1), layers, rotation="vertical")
+        plt.xlim(left=0, right=len(ave_grads))
+        plt.ylim(bottom = -0.001, top=0.02) # zoom in on the lower gradient regions
+        plt.xlabel("Layers")
+        plt.ylabel("average gradient")
+        plt.title("Gradient flow")
+        plt.grid(True)
+        plt.legend([Line2D([0], [0], color="c", lw=4),
+                    Line2D([0], [0], color="b", lw=4),
+                    Line2D([0], [0], color="k", lw=4)], ['max-gradient', 'mean-gradient', 'zero-gradient'])
+        plt.tight_layout()
+
+        save_path = os.path.join(self.save_folder, 'Grad_graph.png')
+        plt.savefig(save_path)
 
 
 def plot_grad_flow(named_parameters, layer_inds, folder_path):

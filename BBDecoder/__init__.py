@@ -51,6 +51,7 @@ class Master_analyzer(GradAnalyzer):
         loss.backward()
         if self.layer_inds is not None:
             if self.grad_flag:
-                plot_grad_flow(self.model.named_parameters(), self.layer_inds, self.save_folder)
+                # plot_grad_flow(self.model.named_parameters(), self.layer_inds, self.save_folder)
+                self.check_grads()
         self.optimizer.step()
         self.optimizer.zero_grad()
