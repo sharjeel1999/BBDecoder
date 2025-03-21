@@ -5,6 +5,16 @@ import cv2
 import os
 from pathlib import Path
 
+class LayerAnalyzer():
+    def __init__(self):
+        pass
+
+
+
+
+
+
+
 def test_function_graph(function, function_name, input_shape, y_output, itter_dim = 0):
     diff = len(input_shape) - itter_dim
 
