@@ -1,4 +1,6 @@
 import torch
+import torch.nn as nn
+import numpy as np
 
 import matplotlib.pyplot as plt
 import cv2
@@ -9,6 +11,28 @@ class LayerAnalyzer():
     def __init__(self):
         pass
 
+    def visualize_weight_hist(self):
+        for name, module in self.model.named_children():
+            if module.index in self.layer_inds:
+
+                weights = module.main_layer.weight.detach().cpu().numpy().flatten()
+
+                plt.figure()
+                plt.hist(weights, bins = 50)
+                plt.title(f"Weight Histogram - {module.name}")
+                plt.xlabel("Weight Value")
+                plt.ylabel("Frequency")
+                plt.grid(True)
+
+                save_path = os.path.join(self.save_folder, f'Weights_{module.name}.png')
+                plt.savefig(save_path)
+
+    def threshold_pruning(self, threshold):
+        for name, module in self.model.named_children():
+            if module.index in self.layer_inds:
+                weights = module.main_layer.weight.detach().cpu().numpy()
+                mask = torch.abs(weights) > threshold
+                module.main_layer.weight = nn.Parameter(module.main_layer.weight * mask)
 
 
 

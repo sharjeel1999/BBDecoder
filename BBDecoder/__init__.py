@@ -1,9 +1,9 @@
 from .visualizer import list_layers
-from .analysis import plot_grad_flow, GradAnalyzer
+from .analysis import plot_grad_flow, GradAnalyzer, LayerAnalyzer
 from .wrappers import Main_wrapper
 import torch.nn as nn
 
-class Master_analyzer(GradAnalyzer):
+class Master_analyzer(GradAnalyzer, LayerAnalyzer):
     def __init__(self,
                  model,
                  optimizer,
