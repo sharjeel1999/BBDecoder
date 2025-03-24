@@ -1,3 +1,4 @@
+import torch
 import torch.nn.functional as F
 
 def cosine_similarity(tensor, dim):
@@ -11,9 +12,14 @@ def cosine_similarity(tensor, dim):
     Returns:
         A 3D tensor of shape [batch_size, height, width] representing the similarity.
     """
-    batch_size, channels, height, width = tensor.shape
-    # Reshape tensor to [batch_size, channels, height * width]
-    reshaped_tensor = tensor.reshape(batch_size, channels, height * width)
+
+    shape = tensor.shape
+    batch_size = shape[0]
+    channels = shape[dim]
+
+    # Reshape tensor to [batch_size, channels, -1]
+    reshaped_tensor = tensor.reshape(batch_size, channels, -1)
+
 
     # Expand dimensions for pairwise comparison
     channel_i = reshaped_tensor.unsqueeze(2)  # [batch_size, channels, 1, height * width]
@@ -33,7 +39,7 @@ def cosine_similarity(tensor, dim):
     similarity = similarity.mean(dim = 1)
     return similarity
 
-def calculate_kl_divergence_torch(tensor, reduction = 'mean'):
+def calculate_kl_divergence_torch(tensor, dim, reduction = 'mean'):
     """
     Calculates the KL divergence of a 4D tensor across dimension 1 using vectorized operations.
 
@@ -45,9 +51,13 @@ def calculate_kl_divergence_torch(tensor, reduction = 'mean'):
     Returns:
         A 1D tensor of shape [batch_size] representing the overall KL divergence.
     """
-    batch_size, channels, height, width = tensor.shape
-    # Reshape tensor to [batch_size, channels, height * width]
-    reshaped_tensor = tensor.reshape(batch_size, channels, height * width)
+
+    shape = tensor.shape
+    batch_size = shape[0]
+    channels = shape[dim]
+
+    # Reshape tensor to [batch_size, channels, -1]
+    reshaped_tensor = tensor.reshape(batch_size, channels, -1)
 
     # Ensure non-negativity and create probability distributions.
     p = F.softmax(reshaped_tensor, dim = 2)
