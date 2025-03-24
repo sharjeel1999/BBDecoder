@@ -17,7 +17,7 @@ class GradAnalyzer():
             plt.ylabel("Frequency")
             plt.grid(True)
 
-            save_path = os.path.join(self.save_folder, f"histograms/grad_hist_{index}.png")
+            save_path = os.path.join(self.save_folder, f"histograms/grad_hist_{index}.jpg")
             plt.savefig(save_path)
             plt.close()  # Close the plot to prevent overlapping
         else:
@@ -57,7 +57,7 @@ class GradAnalyzer():
                     Line2D([0], [0], color="k", lw=4)], ['max-gradient', 'mean-gradient', 'zero-gradient'])
         plt.tight_layout()
 
-        save_path = os.path.join(self.save_folder, 'Grad_graph.png')
+        save_path = os.path.join(self.save_folder, 'Grad_graph.jpg')
         plt.savefig(save_path)
 
 

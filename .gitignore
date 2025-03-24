@@ -2,6 +2,8 @@
 #Template for AL projects for Dynamics 365 Business Central
 #launch.json folder
 
+.save_folder/
+
 .png
 .gv
 

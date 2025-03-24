@@ -35,7 +35,9 @@ wrapped_model = Master_analyzer(model,
                                 optimizer = Adam(model.parameters()),
                                 save_folder = save_path,
                                 layer_inds = [0,1,2,3,4],
-                                grad_flag = True, function_flag = False)
+                                grad_flag = True,
+                                grad_hist_flag = True,
+                                function_flag = False)
 
 
 ## Testing using a dummy dataset
@@ -48,7 +50,9 @@ for epoch in range(Epochs):
     wrapped_model.backward_propagation(loss)
     print('Loss: ', loss)
 
-
+wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights')
+wrapped_model.threshold_pruning(0.01)
+wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights_2')
 
 # from view.torchview import draw_graph
 # from torchviz import make_dot
