@@ -40,6 +40,7 @@ wrapped_model = Master_analyzer(model,
                                 track_grads = True,
                                 function_flag = False)
 
+print(wrapped_model)
 
 ## Testing using a dummy dataset
 Epochs = 10
@@ -55,32 +56,15 @@ wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights
 wrapped_model.threshold_pruning(0.01)
 wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights_2')
 
-# from view.torchview import draw_graph
-# from torchviz import make_dot
-# from visualizer import create_graphviz_graph, list_layers
-
-# if __name__ == "__main__":
-#     model = SimpleCNN(num_classes=10)
-#     print(model)
-
-#     for z, (name, module) in enumerate(model.named_children()):
-#         # Check if the module is a leaf node (e.g., a layer like nn.Linear)
-#         if isinstance(module, nn.Module) and not list(module.children()):  
-#             # Replace the layer with its wrapped version
-#             setattr(model, name, Main_wrapper(module, name, z))
-#         else:
-#             # Recursively wrap layers in submodules (if any)
-#             Main_wrapper(module)
-
-#     print(model)
-#     # model_graph = draw_graph(model, input_size = (4, 1, 28, 28), expand_nested = True, save_graph = True, depth = 4, hide_inner_tensors=True)
-#     # model_graph.visual_graph
-
-#     print('---------------------------------')
-#     list_layers(model)
-
-#     x = torch.randn(4, 1, 28, 28)
-#     # create_graphviz_graph(model, x)
-    
-#     outputs = model(x)
-#     print("Output shape:", outputs.shape)
+for name, module in wrapped_model.model.named_children():
+    print('name: ', name)
+    print('module: ', module)
+    print('module index: ', module.index)
+    print('module name: ', module.name)
+    print('module track flag: ', module.track_flag)
+    print('module main layer: ', module.main_layer)
+    print('module master tracker: ', module.master_tracker)
+    print('module master tracker L1: ', module.master_tracker['L1'])
+    print('module master tracker L2: ', module.master_tracker['L2'])
+    print('module master tracker L1 len: ', len(module.master_tracker['L1']))
+    print('module master tracker L2 len: ', len(module.master_tracker['L2']))
