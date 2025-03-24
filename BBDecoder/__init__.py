@@ -65,7 +65,7 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
             if self.grad_flag:
                 self.check_grads()
 
-        self.optimizer.step()
+        # self.optimizer.step()
         self.optimizer.zero_grad()
 
     def save_tracked_data(self):
@@ -76,21 +76,13 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         for name, module in self.model.named_children():
             if module.track_flag and module.Trainable:
                 tracker = module.master_tracker
-                # df = pd.DataFrame(tracker, columns = Column_names)
-                # save_path = os.path.join(self.save_folder, f'{module.name}_grads.csv')
-                # df.to_csv(save_path, index = False)
-                # data.append({
-                #     'Layer': module.name,
-                #     'L1': tracker['L1'],
-                #     'L2': tracker['L2']
-                # })
+                # Improve the data saving process
                 for i in range(len(tracker['L1'])):
                     data.append({
                         'Layer': module.name,
                         'L1': tracker['L1'][i],
                         'L2': tracker['L2'][i]
                     })
-
 
         df = pd.DataFrame(data)
         save_path = os.path.join(self.save_folder, 'tracked_grads.csv')

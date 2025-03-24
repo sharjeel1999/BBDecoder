@@ -32,7 +32,7 @@ from torch.optim import Adam
 save_path = 'save_folder'
 model = SimpleCNN(num_classes=10)
 wrapped_model = Master_analyzer(model,
-                                optimizer = Adam(model.parameters()),
+                                optimizer = Adam(model.parameters(), lr=0.001),
                                 save_folder = save_path,
                                 layer_inds = [0,1,2,3,4],
                                 grad_flag = True,
@@ -52,9 +52,9 @@ for epoch in range(Epochs):
     wrapped_model.backward_propagation(loss)
     print('Loss: ', loss)
 
-wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights')
-wrapped_model.threshold_pruning(0.01)
-wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights_2')
+# wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights')
+# wrapped_model.threshold_pruning(0.01)
+# wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights_2')
 
 wrapped_model.save_tracked_data()
 

@@ -28,7 +28,7 @@ class GradAnalyzer():
         max_grads= []
         layers = []
         for name, module in self.model.named_children():
-
+            
             if module.index in self.layer_inds:
                 for n, p in module.named_parameters():
                     if(p.requires_grad) and ("bias" not in n):

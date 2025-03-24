@@ -29,9 +29,10 @@ class Main_wrapper(nn.Module):
         return self.main_layer(x)
     
     def tracker_hook(self, grad):
-        
         l1_norm = grad.abs().sum().item()
         l2_norm = torch.sqrt((grad**2).sum()).item()
         self.master_tracker['L1'].append(l1_norm)
         self.master_tracker['L2'].append(l2_norm)
     
+    def inter_channel_div(self, dim):
+        pass
