@@ -1,7 +1,10 @@
 from .visualizer import list_layers
 from .analysis import GradAnalyzer, LayerAnalyzer
 from .wrappers import Main_wrapper
+
 import torch.nn as nn
+import pandas as pd
+import os
 
 class Master_analyzer(GradAnalyzer, LayerAnalyzer):
     def __init__(self,
@@ -32,14 +35,16 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         self.track_grads = track_grads
         self.function_flag = function_flag
 
+        self.layer_names = []
+
         print('----- List of layer and their indices -----')
         self.wrap_layers()
         list_layers(self.model)
 
-        self.tracker = {}
 
     def wrap_layers(self):
         for z, (name, module) in enumerate(self.model.named_children()):
+            self.layer_names.append(name)
             # Check if the module is a leaf node (e.g., a layer like nn.Linear)
             if isinstance(module, nn.Module) and not list(module.children()):  
                 # Replace the layer with its wrapped version
@@ -62,3 +67,32 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
 
         self.optimizer.step()
         self.optimizer.zero_grad()
+
+    def save_tracked_data(self):
+        data = []
+
+        Column_names = ['L1', 'L2']
+
+        for name, module in self.model.named_children():
+            if module.track_flag and module.Trainable:
+                tracker = module.master_tracker
+                # df = pd.DataFrame(tracker, columns = Column_names)
+                # save_path = os.path.join(self.save_folder, f'{module.name}_grads.csv')
+                # df.to_csv(save_path, index = False)
+                # data.append({
+                #     'Layer': module.name,
+                #     'L1': tracker['L1'],
+                #     'L2': tracker['L2']
+                # })
+                for i in range(len(tracker['L1'])):
+                    data.append({
+                        'Layer': module.name,
+                        'L1': tracker['L1'][i],
+                        'L2': tracker['L2'][i]
+                    })
+
+
+        df = pd.DataFrame(data)
+        save_path = os.path.join(self.save_folder, 'tracked_grads.csv')
+        df.to_csv(save_path, index = False)
+        

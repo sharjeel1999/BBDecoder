@@ -14,7 +14,12 @@ class Main_wrapper(nn.Module):
 
         self.main_layer = layer
 
-        if self.track_flag and hasattr(self.main_layer, 'weight'):
+        if hasattr(self.main_layer, 'weight'):
+            self.Trainable = True
+        else:
+            self.Trainable = False
+
+        if self.track_flag and self.Trainable:
             self.master_tracker = {}
             self.master_tracker['L1'] = []
             self.master_tracker['L2'] = []
