@@ -5,31 +5,27 @@ import os
 import matplotlib.pyplot as plt
 
 class Main_wrapper(nn.Module):
-    def __init__(self, layer: nn.Module, name, index):
+    def __init__(self, layer: nn.Module, name, index, track_flag):
         super().__init__()
 
         self.index = index
         self.name = name
+        self.track_flag = track_flag
 
         self.main_layer = layer
+
+        if self.track_flag:
+            self.master_tracker = {}
+            self.master_tracker['L1'] = []
+            self.master_tracker['L2'] = []
+            self.main_layer.register_backward_hook(self.tracker_hook)
 
     def forward(self, x):
         return self.main_layer(x)
     
-    def gradient_histogram(self):
-        """Plots a histogram of gradients for a specific layer."""
-
-        if self.grad is not None:
-            gradients = self.grad.cpu().numpy().flatten()  # Flatten the gradient tensor
-            plt.figure()
-            plt.hist(gradients, bins=50)  # Adjust bins as needed
-            plt.title(f"Gradient Histogram - {self.name}")# - Step {step}")
-            plt.xlabel("Gradient Value")
-            plt.ylabel("Frequency")
-            plt.grid(True)
-            # save_path = os.path.join(save_folder, f"grad_hist_{layer_name}_step_{step}.png")
-            # plt.savefig(save_path)
-            # plt.close() #Close the plot to prevent overlapping.
-        else:
-            print(f"No gradients available for layer: {self.name}")
+    def tracker_hook(self):
+        l1_norm = self.main_layer.grad.abs().sum().item()
+        l2_norm = torch.sqrt((self.main_layer.grad**2).sum()).item()
+        self.master_tracker['L1'].append(l1_norm)
+        self.master_tracker['L2'].append(l2_norm)
     

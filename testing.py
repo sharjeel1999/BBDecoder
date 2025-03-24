@@ -37,6 +37,7 @@ wrapped_model = Master_analyzer(model,
                                 layer_inds = [0,1,2,3,4],
                                 grad_flag = True,
                                 grad_hist_flag = True,
+                                track_grads = True,
                                 function_flag = False)
 
 
