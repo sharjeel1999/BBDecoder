@@ -2,6 +2,7 @@ from .visualizer import list_layers
 from .analysis import GradAnalyzer, LayerAnalyzer
 from .wrappers import Main_wrapper
 
+import torch
 import torch.nn as nn
 import pandas as pd
 import os
@@ -23,6 +24,8 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         save_folder: Folder to save all results and plots.
         layer_inds: List of indices of the layers to be analyzed.
         grad_flag: Flag to plot the gradient flow.
+        grad_hist_flag: Flag to plot the gradient histograms.
+        track_grads: Flag to track the gradients L1 and L2 norms.
         function_flag: Flag to plot the function flow.
         """
         
@@ -87,4 +90,15 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         df = pd.DataFrame(data)
         save_path = os.path.join(self.save_folder, 'tracked_grads.csv')
         df.to_csv(save_path, index = False)
+
+    def record_sim(self, x, layers, dim, sim_method = 'cosine', ):
+        for name, module in self.model.named_children():
+            if module.index in layers:
+                module.record_sim = True
+                module.sim_method = sim_method
+                module.sim_dim = dim
+
+            with torch.no_grad():
+                _ = self.model(x)
+            
         

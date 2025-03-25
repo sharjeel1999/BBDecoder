@@ -12,6 +12,11 @@ class Main_wrapper(nn.Module):
         self.name = name
         self.track_flag = track_flag
 
+        self.record_sim = False
+        self.sim_method = None
+        self.sim_dim = None
+        self.sim_scores = []
+
         self.main_layer = layer
 
         if hasattr(self.main_layer, 'weight'):
@@ -26,8 +31,13 @@ class Main_wrapper(nn.Module):
             self.main_layer.weight.register_hook(self.tracker_hook)
 
     def forward(self, x):
-        return self.main_layer(x)
-    
+        if self.record_sim == False:
+            return self.main_layer(x)
+        else:
+            out = self.main_layer(x)
+            self.inter_channel_div(out)
+            return out
+        
     def tracker_hook(self, grad):
         l1_norm = grad.abs().sum().item()
         l2_norm = torch.sqrt((grad**2).sum()).item()
