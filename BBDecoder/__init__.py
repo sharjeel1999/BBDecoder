@@ -6,6 +6,9 @@ import torch
 import torch.nn as nn
 import pandas as pd
 import os
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 
 class Master_analyzer(GradAnalyzer, LayerAnalyzer):
     def __init__(self,
@@ -29,6 +32,9 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         self.track_grads = None
         self.function_flag = None
 
+        self.ave_grads = []
+        self.max_grads = []
+
         self.layer_names = []
 
         self.wrap_layers()
@@ -45,7 +51,7 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         '''
 
         self.layer_inds = layer_inds
-        self.grad_flag = grad_flag
+        # self.grad_flag = grad_flag
         self.grad_hist_flag = grad_hist_flag
         self.track_grads = track_grads
         self.function_flag = function_flag
@@ -64,16 +70,60 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
     def forward_propagation(self, x):
         return self.model(x)
     
-    def backward_propagation(self, loss):
+    def backward_propagation(self, loss, collect_grads = False, layers = None):
         self.optimizer.zero_grad()
         loss.backward()
 
         # print('//////// ', self.layer_inds, self.grad_flag)
-        if self.layer_inds is not None:
-            if self.grad_flag:
-                self.check_grads()
+        if layers is not None:
+            if collect_grads:
+                self.collect_grads()
 
-        self.optimizer.step()
+        # self.optimizer.step()
+
+    def collect_grads(self):
+        print('--- tick tick ---')
+        iter_ave, iter_max, rec_layers = self.check_grads()
+        self.rec_layers = rec_layers
+        if len(self.ave_grads) == 0:
+            print('--- direct equal')
+            self.ave_grads = iter_ave
+            self.max_grads = iter_max
+        else:
+            print('before add shape:', self.ave_grads.shape, iter_ave.shape)
+            self.ave_grads = np.vstack((self.ave_grads, iter_ave))
+            self.max_grads = np.vstack((self.max_grads, iter_max))
+        
+        print('--- shapes: ', np.array(self.ave_grads).shape, np.array(self.max_grads).shape)
+
+
+    def save_collected_grads(self, save_folder, ep):
+        print('Saving the collected gradients')
+        print('grad shapes: ', np.array(self.ave_grads).shape, np.array(self.max_grads).shape)
+        max_grads = np.max(self.max_grads, axis = 0)
+        ave_grads = np.mean(self.ave_grads, axis = 0)
+
+        plt.bar(np.arange(len(max_grads)), max_grads, alpha=0.1, lw=1, color="c")
+        plt.bar(np.arange(len(max_grads)), ave_grads, alpha=0.1, lw=1, color="b")
+        plt.hlines(0, 0, len(ave_grads)+1, lw=2, color="k" )
+        plt.xticks(range(0,len(ave_grads), 1), self.rec_layers, rotation="vertical")
+        plt.xlim(left=0, right=len(ave_grads))
+        plt.ylim(bottom = -0.001, top=0.02) # zoom in on the lower gradient regions
+        plt.xlabel("Layers")
+        plt.ylabel("average gradient")
+        plt.title("Gradient flow")
+        plt.grid(True)
+        plt.legend([Line2D([0], [0], color="c", lw=4),
+                    Line2D([0], [0], color="b", lw=4),
+                    Line2D([0], [0], color="k", lw=4)], ['max-gradient', 'mean-gradient', 'zero-gradient'])
+        plt.tight_layout()
+
+        save_path = os.path.join(save_folder, f'Epoch_{ep}_Grad_graph.jpg')
+        plt.savefig(save_path)
+
+        self.ave_grads = []
+        self.max_grads = []
+        self.rec_layers = 0
 
     def save_tracked_data(self):
         data = []

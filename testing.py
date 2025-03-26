@@ -8,30 +8,31 @@ from torchvision.models import resnet50, vit_b_16
 from tqdm import tqdm
 
 # Define the CNN architecture
-# class SimpleCNN(nn.Module):
-#     def __init__(self, num_classes=10):
-#         super(SimpleCNN, self).__init__()
+class SimpleCNN(nn.Module):
+    def __init__(self, num_classes=10):
+        super(SimpleCNN, self).__init__()
         
-#         self.conv1 = nn.Conv2d(in_channels=1, out_channels=32, kernel_size=3, stride=1, padding=1)
-#         self.conv2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=1)
+        self.conv1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, stride=1, padding=1)
+        self.conv2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=1)
         
-#         self.fc1 = nn.Linear(64 * 7 * 7, 128)
-#         self.fc2 = nn.Linear(128, num_classes)
+        self.fc1 = nn.Linear(4096, 128)
+        self.fc2 = nn.Linear(128, num_classes)
         
-#         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
         
-#     def forward(self, x):
-#         x = self.pool(F.relu(self.conv1(x)))
-#         x = self.pool(F.relu(self.conv2(x)))
+    def forward(self, x):
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
         
-#         x = x.view(x.size(0), -1)
+        x = x.view(x.size(0), -1)
+        # print('flat shape: ', x.shape)
         
-#         x = F.relu(self.fc1(x))
-#         x = self.fc2(x)
-#         return x
+        x = F.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
 
-# model = SimpleCNN(num_classes=10)
-model = resnet50()
+model = SimpleCNN(num_classes=10)
+# model = resnet50()
 # model = vit_b_16()
 
 from BBDecoder import Master_analyzer
@@ -51,25 +52,25 @@ transform = transforms.Compose([
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
 
-trainset = torchvision.datasets.CIFAR10(
-    root='O:\DATASETS',
-    train=True,
-    download=True,
-    transform=transform
-)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
+# trainset = torchvision.datasets.CIFAR10(
+#     root='/home/sharjeel/Desktop/repositories/DATASETS',
+#     train=True,
+#     download=True,
+#     transform=transform
+# )
+# trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
 
 testset = torchvision.datasets.CIFAR10(
-    root='O:\DATASETS',
+    root='/home/sharjeel/Desktop/repositories/DATASETS',
     train=False,
     download=True,
     transform=transform
 )
 
-subset_indices = list(range(96))  # Indices of the first 10 samples
+subset_indices = list(range(6))  # 96, Indices of the first 10 samples
 subset = torch.utils.data.Subset(testset, subset_indices)
 
-testloader = torch.utils.data.DataLoader(subset, batch_size=32, shuffle=False)
+testloader = torch.utils.data.DataLoader(subset, batch_size=2, shuffle=False)
 
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
@@ -81,28 +82,29 @@ wrapped_model.initialize_analyser(layer_inds = [0, 1, 2, 3, 4],
                                 function_flag = False)
 
 ## Testing using a dummy dataset
-Epochs = 5
+Epochs = 2
 for epoch in range(Epochs):
     
     losses = []
     for data in tqdm(testloader):
         inputs, labels = data
+        print('before forward')
         wrapped_model.optimizer.zero_grad()
         outputs = wrapped_model.forward_propagation(inputs)
         loss = F.cross_entropy(outputs, labels)
-        wrapped_model.backward_propagation(loss)
+        wrapped_model.backward_propagation(loss, collect_grads = True, layers = [0, 1, 2, 3, 4])
         
         losses.append(loss.item())
     
     print('Epoch: ', epoch)
     print('Average Loss: ', sum(losses)/len(losses))
-
+    wrapped_model.save_collected_grads()
 
 # wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights')
 # wrapped_model.threshold_pruning(0.01)
 # wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights_2')
 
-wrapped_model.save_tracked_data()
+wrapped_model.save_tracked_data(save_folder = '/home/sharjeel/Desktop/repositories/Black_box/save_folder', ep = epoch)
 
 # for name, module in wrapped_model.model.named_children():
 #     if module.Trainable:
