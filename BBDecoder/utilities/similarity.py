@@ -39,7 +39,7 @@ def cosine_similarity(tensor, dim):
     similarity = similarity.mean(dim = 1)
     return similarity
 
-def calculate_kl_divergence_torch(tensor, dim, reduction = 'mean'):
+def kl_divergence(tensor, dim, reduction = 'mean'):
     """
     Calculates the KL divergence of a 4D tensor across dimension 1 using vectorized operations.
 

@@ -54,7 +54,7 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
                 setattr(self.model, name, Main_wrapper(module, name, z, self.track_grads))
             else:
                 # Recursively wrap layers in submodules (if any)
-                Main_wrapper(module)
+                Main_wrapper(module, name, z, False)
         
         print('----- Wrapped Layers -----')
 
@@ -62,14 +62,14 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         return self.model(x)
     
     def backward_propagation(self, loss):
+        self.optimizer.zero_grad()
         loss.backward()
 
         if self.layer_inds is not None:
             if self.grad_flag:
                 self.check_grads()
 
-        # self.optimizer.step()
-        self.optimizer.zero_grad()
+        self.optimizer.step()
 
     def save_tracked_data(self):
         data = []
@@ -98,7 +98,7 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
                 module.sim_method = sim_method
                 module.sim_dim = dim
 
-            with torch.no_grad():
-                _ = self.model(x)
+        with torch.no_grad():
+            _ = self.model(x)
             
         

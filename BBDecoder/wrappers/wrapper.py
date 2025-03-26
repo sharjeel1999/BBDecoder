@@ -4,6 +4,8 @@ import torch.nn as nn
 import os
 import matplotlib.pyplot as plt
 
+from BBDecoder.utilities.similarity import cosine_similarity, kl_divergence
+
 class Main_wrapper(nn.Module):
     def __init__(self, layer: nn.Module, name, index, track_flag):
         super().__init__()
@@ -35,7 +37,7 @@ class Main_wrapper(nn.Module):
             return self.main_layer(x)
         else:
             out = self.main_layer(x)
-            self.inter_channel_div(out)
+            self.inter_channel_div(out, self.sim_dim)
             return out
         
     def tracker_hook(self, grad):
@@ -44,5 +46,6 @@ class Main_wrapper(nn.Module):
         self.master_tracker['L1'].append(l1_norm)
         self.master_tracker['L2'].append(l2_norm)
     
-    def inter_channel_div(self, dim):
-        pass
+    def inter_channel_div(self, x, dim):
+        sim = kl_divergence(x, dim)
+        
