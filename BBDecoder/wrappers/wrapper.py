@@ -1,13 +1,14 @@
 import torch
 import torch.nn as nn
 
+from typing import Union
 import os
 import matplotlib.pyplot as plt
 
 from BBDecoder.utilities.similarity import cosine_similarity, kl_divergence
 
 class Main_wrapper(nn.Module):
-    def __init__(self, layer: nn.Module, name, index, track_flag):
+    def __init__(self, layer: Union[nn.Module, nn.Sequential], name, index, track_flag):
         super().__init__()
 
         self.index = index

@@ -5,6 +5,7 @@ import torchvision
 from torchvision import transforms
 from torchvision.models import resnet50, vit_b_16
 
+
 # Define the CNN architecture
 # class SimpleCNN(nn.Module):
 #     def __init__(self, num_classes=10):
@@ -29,7 +30,8 @@ from torchvision.models import resnet50, vit_b_16
 #         return x
 
 # model = SimpleCNN(num_classes=10)
-model = vit_b_16()
+model = resnet50()
+# model = vit_b_16()
 
 from BBDecoder import Master_analyzer
 from torch.optim import Adam

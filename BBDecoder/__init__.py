@@ -42,21 +42,24 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
 
         print('----- List of layer and their indices -----')
         self.wrap_layers()
+        print('--------------------------------------------')
+        print(self.model)
         list_layers(self.model)
 
 
     def wrap_layers(self):
         for z, (name, module) in enumerate(self.model.named_children()):
             self.layer_names.append(name)
-            # Check if the module is a leaf node (e.g., a layer like nn.Linear)
-            if isinstance(module, nn.Module) and not list(module.children()):  
-                # Replace the layer with its wrapped version
+            
+            print('****** ', module)
+            if isinstance(module, nn.Module) or isinstance(module, nn.Sequential):#and not list(module.children()):  
                 setattr(self.model, name, Main_wrapper(module, name, z, self.track_grads))
-            else:
+            # else:
                 # Recursively wrap layers in submodules (if any)
-                Main_wrapper(module, name, z, False)
+                # Main_wrapper(module, name, z, False)
         
         print('----- Wrapped Layers -----')
+
 
     def forward_propagation(self, x):
         return self.model(x)
