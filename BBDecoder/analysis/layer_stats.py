@@ -15,9 +15,7 @@ class LayerAnalyzer():
         for name, module in self.model.named_children():
             if module.index in self.layer_inds:
                 
-                print('---- outside  ', module.name)
                 if hasattr(module.main_layer, 'weight'):
-                    print('---- inside  ', module.name)
                     weights = module.main_layer.weight.detach().cpu().numpy().flatten()
 
                     plt.figure()

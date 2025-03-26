@@ -33,7 +33,8 @@ class GradAnalyzer():
                 for n, p in module.named_parameters():
                     if(p.requires_grad) and ("bias" not in n):
                         try:
-                            layers.append(n)
+                            nn = n.replace('main_layer', module.name)
+                            layers.append(nn)
                             ave_grads.append(p.grad.abs().mean().item())
                             max_grads.append(p.grad.abs().max().item())
                             if self.grad_hist_flag:

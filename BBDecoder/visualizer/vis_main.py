@@ -6,8 +6,6 @@ import dis
 
 def list_layers(model):
     for name, module in model.named_children():
-        print('=== name: ', name)
-        print('=== module: ', module)
         print(f"Layer Index: {module.index}, Layer Name: {module.name}")
 
 def create_graphviz_graph(model, input_tensor):

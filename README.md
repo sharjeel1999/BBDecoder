@@ -9,3 +9,6 @@
 - Saturation in activation functions (percentage of neuron values saturated).
 - variance across channels (accross a certain selected dimension).
 - Check operation being performed (function graph). Create a separate activation wrapper?
+
+## ETC
+- Mean of each itteration is not added (for gradient graphs, L1 and L2 norms)
