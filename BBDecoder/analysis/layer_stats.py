@@ -14,19 +14,44 @@ class LayerAnalyzer():
     def visualize_weight_hist(self, path):
         for name, module in self.model.named_children():
             if module.index in self.layer_inds:
+                if module.Trainable:
+                    print('layer name: ', module.name)
+                    # print('Main layer: ', module.main_layer)
+                    print('instances: ', isinstance(module.main_layer, nn.Module), isinstance(module.main_layer, nn.Sequential))
+                    if isinstance(module.main_layer, nn.Module) and not isinstance(module.main_layer, nn.Sequential):
+                        weights = module.main_layer.weight.detach().cpu().numpy().flatten()
+
+                        plt.figure()
+                        plt.hist(weights, bins = 50)
+                        plt.title(f"Weight Histogram - {module.name}")
+                        plt.xlabel("Weight Value")
+                        plt.ylabel("Frequency")
+                        plt.grid(True)
+
+                        save_path = os.path.join(path, f'hist_{module.name}.jpg')
+                        plt.savefig(save_path)
+                        plt.close()
+
+                    elif isinstance(module.main_layer, nn.Sequential):
+                        for sub_name, sub_module in module.main_layer.named_parameters(): # named_children():
+                            print('sub_module name: ', sub_name)
+                            # print('sub_module: ', sub_module)
+                            if "weight" in sub_name:
+                                print('---------- entered -----------')
+                                weights = sub_module.detach().cpu().numpy().flatten()
+
+                                plt.figure()
+                                plt.hist(weights, bins = 50)
+                                plt.title(f"Weight Histogram - {module.name}")
+                                plt.xlabel("Weight Value")
+                                plt.ylabel("Frequency")
+                                plt.grid(True)
+
+                                save_path = os.path.join(path, f'hist_{module.name}.{sub_name}.jpg')
+                                print('sub modules path: ', save_path)
+                                plt.savefig(save_path)
+                                plt.close()
                 
-                if hasattr(module.main_layer, 'weight'):
-                    weights = module.main_layer.weight.detach().cpu().numpy().flatten()
-
-                    plt.figure()
-                    plt.hist(weights, bins = 50)
-                    plt.title(f"Weight Histogram - {module.name}")
-                    plt.xlabel("Weight Value")
-                    plt.ylabel("Frequency")
-                    plt.grid(True)
-
-                    save_path = os.path.join(path, f'hist_{module.name}.jpg')
-                    plt.savefig(save_path)
 
     def threshold_pruning(self, threshold):
         for name, module in self.model.named_children():
