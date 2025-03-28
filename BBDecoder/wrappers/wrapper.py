@@ -55,4 +55,5 @@ class Main_wrapper(nn.Module):
     
     def inter_channel_div(self, x, dim):
         sim = kl_divergence(x, dim)
+        self.sim_scores.append(sim)
         

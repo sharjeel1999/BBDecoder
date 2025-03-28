@@ -147,7 +147,7 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         df.to_csv(save_path, index = False)
 
 
-    def record_sim(self, x, layers, dim, sim_method = 'cosine', ):
+    def record_sim(self, x, layers, dim, sim_method = 'cosine'):
         for name, module in self.model.named_children():
             if module.index in layers:
                 module.record_sim = True
@@ -156,5 +156,8 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
 
         with torch.no_grad():
             _ = self.model(x)
-            
+
+        for name, module in self.model.named_children():
+            if module.index in layers:
+                print(f'Layer Index: {module.index}, Layer Name: {module.name}, Similarity Scores: {module.sim_scores}')
         
