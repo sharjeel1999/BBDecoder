@@ -130,8 +130,10 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         Column_names = ['L1', 'L2']
 
         for name, module in self.model.named_children():
+            print('-- before names;', module.name, module.track_flag, module.Trainable)
             if module.track_flag and module.Trainable:
                 tracker = module.master_tracker
+                print('tracker name: ', module.name)
                 # Improve the data saving process
                 for i in range(len(tracker['L1'])):
                     data.append({
