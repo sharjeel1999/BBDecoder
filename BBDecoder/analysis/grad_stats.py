@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
+import torch
+
 class GradAnalyzer():
     def __init__(self):
         pass
@@ -25,7 +27,9 @@ class GradAnalyzer():
 
     def check_grads(self):
         ave_grads = []
-        max_grads= []
+        max_grads = []
+        l1_grads = []
+        l2_grads = []
         layers = []
         for name, module in self.model.named_children():
 
@@ -37,13 +41,17 @@ class GradAnalyzer():
                             layers.append(nn)
                             ave_grads.append(p.grad.abs().mean().item())
                             max_grads.append(p.grad.abs().max().item())
-                            if self.grad_hist_flag:
-                                self.generate_hist(p, module.index)
+                            l1_grads.append(p.grad.abs().sum().item())
+                            l2_grads.append(torch.sqrt((p.grad**2).sum()).item())
+                            # if self.grad_hist_flag:
+                            #     self.generate_hist(p, module.index)
                         except:
                             ave_grads.append(0)
                             max_grads.append(0)
+                            l1_grads.append(0)
+                            l2_grads.append(0)
 
-        return np.array(ave_grads), np.array(max_grads), np.array(layers)
+        return np.array(ave_grads), np.array(max_grads), np.array(l1_grads), np.array(l2_grads), np.array(layers)
     
         # plt.bar(np.arange(len(max_grads)), max_grads, alpha=0.1, lw=1, color="c")
         # plt.bar(np.arange(len(max_grads)), ave_grads, alpha=0.1, lw=1, color="b")

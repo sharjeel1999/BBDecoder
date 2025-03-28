@@ -36,6 +36,8 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
 
         self.ave_grads = []
         self.max_grads = []
+        self.l1_norm = []
+        self.l2_norm = []
 
         self.layer_names = []
 
@@ -86,14 +88,18 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
     def collect_grads(self, layers):
         self.layer_inds = layers
         
-        iter_ave, iter_max, rec_layers = self.check_grads()
+        iter_ave, iter_max, l1_norm, l2_norm, rec_layers = self.check_grads()
         self.rec_layers = rec_layers
         if len(self.ave_grads) == 0:
             self.ave_grads = iter_ave
             self.max_grads = iter_max
+            self.l1_norm = l1_norm
+            self.l2_norm = l2_norm
         else:
             self.ave_grads = np.vstack((self.ave_grads, iter_ave))
             self.max_grads = np.vstack((self.max_grads, iter_max))
+            self.l1_norm = np.vstack((self.l1_norm, l1_norm))
+            self.l2_norm = np.vstack((self.l2_norm, l2_norm))
 
 
     def save_collected_grads(self, save_folder, ep):
@@ -123,6 +129,30 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         self.ave_grads = []
         self.max_grads = []
         self.rec_layers = 0
+
+    def plot_paired_lines_from_arrays(self, save_dir, ep):
+        
+        norm_save_path = os.path.join(save_dir, 'norms')
+        if not os.path.exists(norm_save_path):
+            os.makedirs(norm_save_path)
+
+        a, b = self.l1_norm.shape  # Get the dimensions (both arrays have the same shape)
+
+        for i in range(b):
+            plt.figure(figsize=(10, 6))  # Create a new figure for each pair of lines
+            plt.title(f"Gradient norm (Layer {self.rec_layers[i]})")  # Unique title for each subplot
+            plt.xlabel('Itterations')
+            plt.ylabel("Gradient Norm")
+
+            # Plot the two lines on the same graph
+            plt.plot(self.l1_norm[:, i], label=f'L1', color='blue')
+            plt.plot(self.l2_norm[:, i], label=f'L2', color='orange')
+
+            plt.legend()
+            plt.grid(True)
+            
+            save_path = os.path.join(norm_save_path, f'Epoch_{ep}_{self.rec_layers[i]}.jpg')
+            plt.savefig(save_path)
 
     def save_tracked_data(self, save_folder):
         data = []
