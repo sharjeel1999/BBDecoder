@@ -1,2 +1,2 @@
-from .grad_stats import plot_grad_flow, GradAnalyzer
+from .grad_stats import GradAnalyzer
 from .layer_stats import LayerAnalyzer

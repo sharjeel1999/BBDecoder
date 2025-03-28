@@ -31,8 +31,10 @@ class SimpleCNN(nn.Module):
         x = self.fc2(x)
         return x
 
-model = SimpleCNN(num_classes=10)
-# model = resnet50()
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# model = SimpleCNN(num_classes=10)
+model = resnet50().to(device)
 # model = vit_b_16()
 
 from BBDecoder import Master_analyzer
@@ -41,7 +43,8 @@ from torch.optim import Adam
 save_path = 'save_folder'
 wrapped_model = Master_analyzer(model,
                                 optimizer = Adam(model.parameters(), lr=0.001),
-                                save_folder = save_path)
+                                save_folder = save_path,
+                                track_grads = True)
 
 print(wrapped_model)
 
@@ -52,13 +55,13 @@ transform = transforms.Compose([
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
 
-# trainset = torchvision.datasets.CIFAR10(
-#     root='/home/sharjeel/Desktop/repositories/DATASETS',
-#     train=True,
-#     download=True,
-#     transform=transform
-# )
-# trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
+trainset = torchvision.datasets.CIFAR10(
+    root='/home/sharjeel/Desktop/repositories/DATASETS',
+    train=True,
+    download=True,
+    transform=transform
+)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
 
 testset = torchvision.datasets.CIFAR10(
     root='/home/sharjeel/Desktop/repositories/DATASETS',
@@ -67,44 +70,47 @@ testset = torchvision.datasets.CIFAR10(
     transform=transform
 )
 
-subset_indices = list(range(6))  # 96, Indices of the first 10 samples
-subset = torch.utils.data.Subset(testset, subset_indices)
+# subset_indices = list(range(6))  # 96, Indices of the first 10 samples
+# subset = torch.utils.data.Subset(testset, subset_indices)
 
-testloader = torch.utils.data.DataLoader(subset, batch_size=2, shuffle=False)
+testloader = torch.utils.data.DataLoader(testset, batch_size=32, shuffle=False)
 
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
 
-wrapped_model.initialize_analyser(layer_inds = [0, 1, 2, 3, 4],
-                                grad_flag = True,
-                                grad_hist_flag = True,
-                                track_grads = True,
-                                function_flag = False)
+# wrapped_model.initialize_analyser(layer_inds = [0, 1, 2, 3, 4],
+#                                 grad_flag = True,
+#                                 grad_hist_flag = True,
+#                                 track_grads = True,
+#                                 function_flag = False)
+
 
 ## Testing using a dummy dataset
-Epochs = 2
+Epochs = 3
 for epoch in range(Epochs):
     
     losses = []
     for data in tqdm(testloader):
         inputs, labels = data
-        print('before forward')
+        inputs, labels = inputs.to(device), labels.to(device)
+        
         wrapped_model.optimizer.zero_grad()
         outputs = wrapped_model.forward_propagation(inputs)
         loss = F.cross_entropy(outputs, labels)
-        wrapped_model.backward_propagation(loss, collect_grads = True, layers = [0, 1, 2, 3, 4])
+        wrapped_model.backward_propagation(loss, collect_grads = True, layers = [0, 1, 2, 3, 4, 5, 6])
         
         losses.append(loss.item())
     
     print('Epoch: ', epoch)
     print('Average Loss: ', sum(losses)/len(losses))
-    wrapped_model.save_collected_grads()
+    wrapped_model.save_collected_grads(save_folder = 'O:\\PCodes\\black_box\\save_folder', ep = epoch)
+
 
 # wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights')
 # wrapped_model.threshold_pruning(0.01)
 # wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights_2')
 
-wrapped_model.save_tracked_data(save_folder = '/home/sharjeel/Desktop/repositories/Black_box/save_folder', ep = epoch)
+wrapped_model.save_tracked_data(save_folder = 'O:\\PCodes\\black_box\\save_folder')
 
 # for name, module in wrapped_model.model.named_children():
 #     if module.Trainable:

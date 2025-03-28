@@ -14,7 +14,8 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
     def __init__(self,
                  model,
                  optimizer,
-                 save_folder
+                 save_folder,
+                 track_grads
                  ):
         """
         model: Model to be analyzed.
@@ -25,11 +26,12 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         self.model = model
         self.optimizer = optimizer
         self.save_folder = save_folder
+        self.track_grads = track_grads
 
         self.layer_inds = None
         self.grad_flag = None
         self.grad_hist_flag = None
-        self.track_grads = None
+        # self.track_grads = None
         self.function_flag = None
 
         self.ave_grads = []
@@ -50,7 +52,7 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         function_flag: Flag to plot the function flow.
         '''
 
-        self.layer_inds = layer_inds
+        # self.layer_inds = layer_inds
         # self.grad_flag = grad_flag
         self.grad_hist_flag = grad_hist_flag
         self.track_grads = track_grads
@@ -74,34 +76,31 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         self.optimizer.zero_grad()
         loss.backward()
 
-        # print('//////// ', self.layer_inds, self.grad_flag)
         if layers is not None:
             if collect_grads:
-                self.collect_grads()
+                self.collect_grads(layers)
 
-        # self.optimizer.step()
+        self.optimizer.step()
 
-    def collect_grads(self):
-        print('--- tick tick ---')
+
+    def collect_grads(self, layers):
+        self.layer_inds = layers
+        
         iter_ave, iter_max, rec_layers = self.check_grads()
         self.rec_layers = rec_layers
         if len(self.ave_grads) == 0:
-            print('--- direct equal')
             self.ave_grads = iter_ave
             self.max_grads = iter_max
         else:
-            print('before add shape:', self.ave_grads.shape, iter_ave.shape)
             self.ave_grads = np.vstack((self.ave_grads, iter_ave))
             self.max_grads = np.vstack((self.max_grads, iter_max))
-        
-        print('--- shapes: ', np.array(self.ave_grads).shape, np.array(self.max_grads).shape)
 
 
     def save_collected_grads(self, save_folder, ep):
-        print('Saving the collected gradients')
-        print('grad shapes: ', np.array(self.ave_grads).shape, np.array(self.max_grads).shape)
         max_grads = np.max(self.max_grads, axis = 0)
         ave_grads = np.mean(self.ave_grads, axis = 0)
+
+        plt.figure(figsize=(15, 6)) # (width, height)
 
         plt.bar(np.arange(len(max_grads)), max_grads, alpha=0.1, lw=1, color="c")
         plt.bar(np.arange(len(max_grads)), ave_grads, alpha=0.1, lw=1, color="b")
@@ -125,7 +124,7 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         self.max_grads = []
         self.rec_layers = 0
 
-    def save_tracked_data(self):
+    def save_tracked_data(self, save_folder):
         data = []
 
         Column_names = ['L1', 'L2']
@@ -142,8 +141,9 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
                     })
 
         df = pd.DataFrame(data)
-        save_path = os.path.join(self.save_folder, 'tracked_grads.csv')
+        save_path = os.path.join(save_folder, 'tracked_grads.csv')
         df.to_csv(save_path, index = False)
+
 
     def record_sim(self, x, layers, dim, sim_method = 'cosine', ):
         for name, module in self.model.named_children():
