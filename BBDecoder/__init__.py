@@ -13,18 +13,15 @@ from matplotlib.lines import Line2D
 class Master_analyzer(GradAnalyzer, LayerAnalyzer):
     def __init__(self,
                  model,
-                 optimizer,
                  save_folder,
                  track_grads
                  ):
         """
         model: Model to be analyzed.
-        optimizer: Optimizer used to train the model.
         save_folder: Folder to save all results and plots.
         """
         
         self.model = model
-        self.optimizer = optimizer
         self.save_folder = save_folder
         self.track_grads = track_grads
 
@@ -75,14 +72,12 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         return self.model(x)
     
     def backward_propagation(self, loss, collect_grads = False, layers = None):
-        self.optimizer.zero_grad()
         loss.backward()
 
         if layers is not None:
             if collect_grads:
                 self.collect_grads(layers)
 
-        self.optimizer.step()
 
 
     def collect_grads(self, layers):
@@ -125,10 +120,16 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
 
         save_path = os.path.join(save_folder, f'Epoch_{ep}_Grad_graph.jpg')
         plt.savefig(save_path)
+        plt.close()
+
+        self.plot_paired_lines_from_arrays(save_folder, ep)
 
         self.ave_grads = []
         self.max_grads = []
         self.rec_layers = 0
+        self.l1_norm = []
+        self.l2_norm = []
+
 
     def plot_paired_lines_from_arrays(self, save_dir, ep):
         

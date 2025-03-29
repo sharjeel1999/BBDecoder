@@ -40,9 +40,10 @@ model = resnet50().to(device)
 from BBDecoder import Master_analyzer
 from torch.optim import Adam
 
+optimizer = Adam(model.parameters(), lr=0.001)
+
 save_path = 'save_folder'
 wrapped_model = Master_analyzer(model,
-                                optimizer = Adam(model.parameters(), lr=0.001),
                                 save_folder = save_path,
                                 track_grads = True)
 
@@ -97,8 +98,10 @@ for epoch in range(Epochs):
         wrapped_model.optimizer.zero_grad()
         outputs = wrapped_model.forward_propagation(inputs)
         loss = F.cross_entropy(outputs, labels)
+
+        optimizer.zero_grad()
         wrapped_model.backward_propagation(loss, collect_grads = True, layers = [0, 1, 2, 3, 4, 5, 6])
-        
+        optimizer.step()
         losses.append(loss.item())
     
     print('Epoch: ', epoch)
