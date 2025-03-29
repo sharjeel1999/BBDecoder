@@ -11,9 +11,9 @@ class LayerAnalyzer():
     def __init__(self):
         pass
 
-    def visualize_weight_hist(self, path):
+    def visualize_weight_hist(self, path, layer_inds):
         for name, module in self.model.named_children():
-            if module.index in self.layer_inds:
+            if module.index in layer_inds:
                 if module.Trainable:
                     if isinstance(module.main_layer, nn.Module) and not isinstance(module.main_layer, nn.Sequential):
                         weights = module.main_layer.weight.detach().cpu().numpy().flatten()

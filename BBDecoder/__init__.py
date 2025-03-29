@@ -60,7 +60,7 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
             self.layer_names.append(name)
             
             if isinstance(module, nn.Module) or isinstance(module, nn.Sequential):#and not list(module.children()):  
-                setattr(self.model, name, Main_wrapper(module, name, z, self.track_grads))
+                setattr(self.model, name, Main_wrapper(module, name, z))
             # else:
                 # Recursively wrap layers in submodules (if any)
                 # Main_wrapper(module, name, z, False)

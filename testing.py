@@ -85,7 +85,7 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship'
 
 
 ## Testing using a dummy dataset
-Epochs = 2
+Epochs = 1
 for epoch in range(Epochs):
     
     losses = []
@@ -106,9 +106,9 @@ for epoch in range(Epochs):
     wrapped_model.save_collected_grads(save_folder = 'O:\\PCodes\\black_box\\save_folder', ep = epoch)
 
 
-wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights')
-wrapped_model.threshold_pruning(0.01)
-wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights_2')
+# wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights')
+# # wrapped_model.threshold_pruning(0.01)
+wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights_2', layer_inds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 
 # wrapped_model.save_tracked_data(save_folder = 'O:\\PCodes\\black_box\\save_folder')
 
