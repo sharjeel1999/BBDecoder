@@ -1,3 +1,5 @@
+import os 
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -55,7 +57,7 @@ transform = transforms.Compose([
 ])
 
 trainset = torchvision.datasets.CIFAR10(
-    root='/home/sharjeel/Desktop/repositories/DATASETS',
+    root='DATASETS',
     train=True,
     download=True,
     transform=transform
@@ -63,7 +65,7 @@ trainset = torchvision.datasets.CIFAR10(
 trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
 
 testset = torchvision.datasets.CIFAR10(
-    root='/home/sharjeel/Desktop/repositories/DATASETS',
+    root='DATASETS',
     train=False,
     download=True,
     transform=transform
@@ -103,12 +105,18 @@ for epoch in range(Epochs):
     
     print('Epoch: ', epoch)
     print('Average Loss: ', sum(losses)/len(losses))
-    wrapped_model.save_collected_grads(save_folder = 'O:\\PCodes\\black_box\\save_folder', ep = epoch)
+    save_folder = 'results'
+    if not os.path.exists(save_folder):
+        os.makedirs(save_folder)
+    wrapped_model.save_collected_grads(save_folder = save_folder, ep = epoch)
 
 
 # wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights')
 # # wrapped_model.threshold_pruning(0.01)
-wrapped_model.visualize_weight_hist('O:\\PCodes\\black_box\\save_folder\\Weights_2', layer_inds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+weights_folder = os.path.join("results", "weights")
+if not os.path.exists(weights_folder):
+    os.makedirs(weights_folder)
+wrapped_model.visualize_weight_hist(path=weights_folder, layer_inds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 
 # wrapped_model.save_tracked_data(save_folder = 'O:\\PCodes\\black_box\\save_folder')
 
