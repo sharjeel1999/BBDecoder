@@ -13,8 +13,6 @@ from matplotlib.lines import Line2D
 class Master_analyzer(GradAnalyzer, LayerAnalyzer):
     def __init__(self,
                  model,
-                 save_folder,
-                 track_grads
                  ):
         """
         model: Model to be analyzed.
@@ -22,8 +20,8 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         """
         
         self.model = model
-        self.save_folder = save_folder
-        self.track_grads = track_grads
+        # self.save_folder = save_folder
+        # self.track_grads = track_grads
 
         self.layer_inds = None
         self.grad_flag = None

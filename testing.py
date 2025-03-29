@@ -43,9 +43,7 @@ from torch.optim import Adam
 optimizer = Adam(model.parameters(), lr=0.001)
 
 save_path = 'save_folder'
-wrapped_model = Master_analyzer(model,
-                                save_folder = save_path,
-                                track_grads = True)
+wrapped_model = Master_analyzer(model)
 
 print(wrapped_model)
 
@@ -95,7 +93,6 @@ for epoch in range(Epochs):
         inputs, labels = data
         inputs, labels = inputs.to(device), labels.to(device)
         
-        wrapped_model.optimizer.zero_grad()
         outputs = wrapped_model.forward_propagation(inputs)
         loss = F.cross_entropy(outputs, labels)
 
