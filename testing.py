@@ -50,35 +50,11 @@ wrapped_model = Master_analyzer(model)
 print(wrapped_model)
 
 from torchview import draw_graph
-from BBDecoder.visualizer import draw_graph
+# from BBDecoder.visualizer import draw_graph
 
-input_size = (1, 3, 32, 32)
-model_graph = draw_graph(wrapped_model, input_size = input_size, expand_nested=True, hide_module_functions=True)
-
-for node in model_graph.visual_graph.body:  # Traverse graph nodes
-    # print('node: ', node)
-    if 'label=Main_wrapper' in node:
-        # print('Node: ', node)
-        # print('Split: ',  node.split("label=\"")[0])
-        # print('Split: ',  node.split("label=\"")[0].split('\'')[0])
-        node_rep = node.replace('Main_wrapper', f"{'zzzz'}")
-        # print('Node rep: ', node_rep)
-
-        # original_label = node.split('label=\'')[1].split('\'')[0]
-        # new_label = original_label.replace('Main_wrapper', f"{node.un_name}")
-
-        node_index = model_graph.visual_graph.body.index(node)
-        # model_graph.visual_graph.body[node_index] = node_rep
-
-# for node in model_graph.visual_graph.body:  # Traverse graph nodes
-#     try:
-#         # print('node: ', node)
-#         if "Main_wrapper" in node.name:
-#             node.name = node.name.replace("Main_wrapper", f"{node.un_name}")
-#     except:
-#         print('Error: ', node)
-
-model_graph.visual_graph.render("model_visualization_with_index", format = "png")
+# input_size = (1, 3, 32, 32)
+# model_graph = draw_graph(wrapped_model, input_size = input_size, expand_nested=True, hide_module_functions=True)
+# model_graph.visual_graph.render("model_visualization_with_index", format = "png")
 
 
 transform = transforms.Compose([

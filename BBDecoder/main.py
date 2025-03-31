@@ -1,4 +1,4 @@
-from .visualizer import list_layers
+from .visualizer import list_layers, draw_graph
 from .analysis import GradAnalyzer, LayerAnalyzer
 from .wrappers import Main_wrapper
 
@@ -13,14 +13,17 @@ from matplotlib.lines import Line2D
 class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
     def __init__(self,
                  model,
+                 input_size = (1, 3, 32, 32),
                  ):
         """
         model: Model to be analyzed.
         save_folder: Folder to save all results and plots.
+        input_size: Input size of the model.
         """
         super(Master_analyzer, self).__init__()
         self.model = model
         self.training = False
+        self.input_size = input_size
         # self.save_folder = save_folder
         # self.track_grads = track_grads
 
@@ -40,17 +43,14 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         self.wrap_layers()
         print('----- List of layer and their indices -----')
         list_layers(self.model)
+        self.visualize_architecture()
 
-    # def train(self, mode = True):
-    #     self.model.train(mode)
-
-    # def eval(self):
-    #     self.model.eval()
-    
-    # def to(self, device):
-    #     self.model.to(device)
+    def visualize_architecture(self):
+        model_graph = draw_graph(self, input_size = self.input_size, expand_nested=True, hide_module_functions=True)
+        model_graph.visual_graph.render("Model_architecture", format = "png")
 
     def forward(self, x):
+        # this is just for torchview visualization
         return self.model(x)
 
     def initialize_analyser(self, layer_inds, grad_flag, grad_hist_flag, track_grads, function_flag):
