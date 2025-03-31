@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
-class Master_analyzer(GradAnalyzer, LayerAnalyzer):
+class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
     def __init__(self,
                  model,
                  ):
@@ -18,8 +18,9 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         model: Model to be analyzed.
         save_folder: Folder to save all results and plots.
         """
-        
+        super(Master_analyzer, self).__init__()
         self.model = model
+        self.training = False
         # self.save_folder = save_folder
         # self.track_grads = track_grads
 
@@ -39,6 +40,18 @@ class Master_analyzer(GradAnalyzer, LayerAnalyzer):
         self.wrap_layers()
         print('----- List of layer and their indices -----')
         list_layers(self.model)
+
+    # def train(self, mode = True):
+    #     self.model.train(mode)
+
+    # def eval(self):
+    #     self.model.eval()
+    
+    # def to(self, device):
+    #     self.model.to(device)
+
+    def forward(self, x):
+        return self.model(x)
 
     def initialize_analyser(self, layer_inds, grad_flag, grad_hist_flag, track_grads, function_flag):
         '''

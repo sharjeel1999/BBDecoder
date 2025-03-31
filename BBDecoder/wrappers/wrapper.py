@@ -16,6 +16,7 @@ class Main_wrapper(nn.Module):
 
         self.index = index
         self.name = name
+        
         # self.track_flag = track_flag
 
         self.record_sim = False
@@ -24,6 +25,7 @@ class Main_wrapper(nn.Module):
         self.sim_scores = []
 
         self.main_layer = layer
+        self.Un_name = f"{self.main_layer.__class__.__name__} (Index: {self.index})"
 
         # if hasattr(self.main_layer, 'weight'):
         #     self.Trainable = True
@@ -56,4 +58,8 @@ class Main_wrapper(nn.Module):
     def inter_channel_div(self, x, dim):
         sim = kl_divergence(x, dim)
         self.sim_scores.append(sim)
+
+    def __repr__(self):
+        return f"{self.main_layer.__class__.__name__} (Index: {self.index})"
+    
         
