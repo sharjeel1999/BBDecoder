@@ -111,11 +111,6 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
         # Create module_node and connect to its parents tensor node
         cur_depth = next(iter(input_nodes)).depth
         input_context = next(iter(input_nodes)).context
-        # print('--- module forward: ', type(mod).__name__)
-        # try:
-        #     print('--- module forward name: ', type(mod).__name__, mod.name)
-        # except:
-        #     print(type(mod).__name__)
 
         if type(mod).__name__ == 'Main_wrapper':
             cur_node = ModuleNode(

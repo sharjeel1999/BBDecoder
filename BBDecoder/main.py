@@ -24,14 +24,10 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         self.model = model
         self.training = False
         self.input_size = input_size
-        # self.save_folder = save_folder
-        # self.track_grads = track_grads
 
         self.layer_inds = None
         self.grad_flag = None
         self.grad_hist_flag = None
-        # self.track_grads = None
-        self.function_flag = None
 
         self.ave_grads = []
         self.max_grads = []
@@ -53,20 +49,6 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         # this is just for torchview visualization
         return self.model(x)
 
-    def initialize_analyser(self, layer_inds, grad_flag, grad_hist_flag, track_grads, function_flag):
-        '''
-        layer_inds: List of indices of the layers to be analyzed.
-        grad_flag: Flag to plot the gradient flow.
-        grad_hist_flag: Flag to plot the gradient histograms.
-        track_grads: Flag to track the gradients L1 and L2 norms.
-        function_flag: Flag to plot the function flow.
-        '''
-
-        # self.layer_inds = layer_inds
-        # self.grad_flag = grad_flag
-        self.grad_hist_flag = grad_hist_flag
-        self.track_grads = track_grads
-        self.function_flag = function_flag
 
     def wrap_layers(self):
         for z, (name, module) in enumerate(self.model.named_children()):
@@ -170,9 +152,6 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
 
     def save_tracked_data(self, save_folder):
         data = []
-
-        Column_names = ['L1', 'L2']
-
         for name, module in self.model.named_children():
             print('-- before names;', module.name, module.track_flag, module.Trainable)
             if module.track_flag and module.Trainable:

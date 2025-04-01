@@ -25,21 +25,9 @@ class Main_wrapper(nn.Module):
         self.sim_scores = []
 
         self.main_layer = layer
-        self.Un_name = f"{self.main_layer.__class__.__name__} (Index: {self.index})"
-
-        # if hasattr(self.main_layer, 'weight'):
-        #     self.Trainable = True
-        # else:
-        #     self.Trainable = False
 
         self.Trainable = has_trainable_parameters(self.main_layer)
 
-        
-        # if self.track_flag and self.Trainable:
-        #     self.master_tracker = {}
-        #     self.master_tracker['L1'] = []
-        #     self.master_tracker['L2'] = []
-        #     self.main_layer.weight.register_hook(self.tracker_hook)
 
     def forward(self, x):
         if self.record_sim == False:
@@ -48,18 +36,11 @@ class Main_wrapper(nn.Module):
             out = self.main_layer(x)
             self.inter_channel_div(out, self.sim_dim)
             return out
-        
-    # def tracker_hook(self, grad):
-    #     l1_norm = grad.abs().sum().item()
-    #     l2_norm = torch.sqrt((grad**2).sum()).item()
-    #     self.master_tracker['L1'].append(l1_norm)
-    #     self.master_tracker['L2'].append(l2_norm)
     
     def inter_channel_div(self, x, dim):
         sim = kl_divergence(x, dim)
         self.sim_scores.append(sim)
 
-    def __repr__(self):
-        return f"{self.main_layer.__class__.__name__} (Index: {self.index})"
+
     
         
