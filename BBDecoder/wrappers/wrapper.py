@@ -16,8 +16,6 @@ class Main_wrapper(nn.Module):
 
         self.index = index
         self.name = name
-        
-        # self.track_flag = track_flag
 
         self.record_sim = False
         self.sim_method = None
@@ -25,9 +23,7 @@ class Main_wrapper(nn.Module):
         self.sim_scores = []
 
         self.main_layer = layer
-
         self.Trainable = has_trainable_parameters(self.main_layer)
-
 
     def forward(self, x):
         if self.record_sim == False:
@@ -38,7 +34,12 @@ class Main_wrapper(nn.Module):
             return out
     
     def inter_channel_div(self, x, dim):
-        sim = kl_divergence(x, dim)
+        if self.sim_method == 'cosine':
+            sim = cosine_similarity(x, dim)
+        elif self.sim_method == 'kl_divergence':
+            sim = kl_divergence(x, dim)
+        else:
+            raise ValueError("Invalid similarity method. Choose 'cosine' or 'kl_divergence'.")
         self.sim_scores.append(sim)
 
 

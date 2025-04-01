@@ -47,7 +47,7 @@ optimizer = Adam(model.parameters(), lr=0.001)
 save_path = 'save_folder'
 wrapped_model = Master_analyzer(model)
 
-print(wrapped_model)
+# print(wrapped_model)
 
 from torchview import draw_graph
 # from BBDecoder.visualizer import draw_graph
@@ -127,16 +127,9 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship'
 # wrapped_model.save_tracked_data(save_folder = 'O:\\PCodes\\black_box\\save_folder')
 
 
-# for name, module in wrapped_model.model.named_children():
-#     if module.Trainable:
-#         print('name: ', name)
-#         print('module: ', module)
-#         print('module index: ', module.index)
-#         print('module name: ', module.name)
-#         print('module track flag: ', module.track_flag)
-#         print('module main layer: ', module.main_layer)
-#         print('module master tracker: ', module.master_tracker)
-#         print('module master tracker L1: ', module.master_tracker['L1'])
-#         print('module master tracker L2: ', module.master_tracker['L2'])
-#         print('module master tracker L1 len: ', len(module.master_tracker['L1']))
-#         print('module master tracker L2 len: ', len(module.master_tracker['L2']))
+for batch_idx, (inputs, targets) in enumerate(testloader):
+    print(f"Batch {batch_idx}:")
+    print("Inputs:", inputs.shape)
+    print("Targets:", targets.shape)
+    wrapped_model.get_sim(torch.unsqueeze(inputs.cuda()[0, :, :, :], dim=0), layers = [0, 1, 2, 3, 4, 5, 6], dim = 1)
+    break

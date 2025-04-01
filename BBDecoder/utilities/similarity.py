@@ -55,6 +55,7 @@ def kl_divergence(tensor, dim, reduction = 'mean'):
     shape = tensor.shape
     batch_size = shape[0]
     channels = shape[dim]
+    print('similarity input shape: ', tensor.shape)
 
     # Reshape tensor to [batch_size, channels, -1]
     reshaped_tensor = tensor.reshape(batch_size, channels, -1)
@@ -72,8 +73,15 @@ def kl_divergence(tensor, dim, reduction = 'mean'):
 
     # Sum the KL divergence values, excluding the diagonal (divergence with itself)
     kl_divergence_sum = kl_divergence_matrix.sum(dim = 1) - 0  # KL Div with itself is 0
-
+    
     # Average the KL divergence over spatial dimensions and channel pairs for each batch
-    overall_kl_divergence = kl_divergence_sum.mean(dim = 1)
+    if reduction == 'mean':
+        kl_divergence_sum = kl_divergence_sum.mean(dim = 1)
+    elif reduction == 'sum':
+        kl_divergence_sum = kl_divergence_sum.sum(dim = 1)
+    else:
+        raise ValueError("Invalid reduction method. Choose 'mean' or 'sum'.")
+    
+    overall_kl_divergence = kl_divergence_sum.mean(dim = 0) # mean of each batch
 
     return overall_kl_divergence

@@ -170,7 +170,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         df.to_csv(save_path, index = False)
 
 
-    def record_sim(self, x, layers, dim, sim_method = 'cosine'):
+    def get_sim(self, x, layers, dim, sim_method = 'cosine'):
         for name, module in self.model.named_children():
             if module.index in layers:
                 module.record_sim = True
