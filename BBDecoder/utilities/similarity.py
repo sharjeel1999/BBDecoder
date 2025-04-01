@@ -55,7 +55,6 @@ def kl_divergence(tensor, dim, reduction = 'mean'):
     shape = tensor.shape
     batch_size = shape[0]
     channels = shape[dim]
-    print('similarity input shape: ', tensor.shape)
 
     # Reshape tensor to [batch_size, channels, -1]
     reshaped_tensor = tensor.reshape(batch_size, channels, -1)

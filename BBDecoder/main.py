@@ -16,18 +16,16 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
                  input_size = (1, 3, 32, 32),
                  ):
         """
-        model: Model to be analyzed.
-        save_folder: Folder to save all results and plots.
-        input_size: Input size of the model.
+        Wrappes the entire model and contains functions to visualize and analyze the wrapped model
+        Args:
+            model: Model to be analyzed.
+            input_size: Input size of the model.
         """
         super(Master_analyzer, self).__init__()
         self.model = model
-        self.training = False
         self.input_size = input_size
 
         self.layer_inds = None
-        self.grad_flag = None
-        self.grad_hist_flag = None
 
         self.ave_grads = []
         self.max_grads = []
@@ -37,8 +35,8 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         self.layer_names = []
 
         self.wrap_layers()
-        print('----- List of layer and their indices -----')
-        list_layers(self.model)
+        # print('----- List of layer and their indices -----')
+        # list_layers(self.model)
         self.visualize_architecture()
 
     def visualize_architecture(self):
@@ -65,12 +63,19 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         return self.model(x)
     
     def backward_propagation(self, loss, collect_grads = False, layers = None):
+        """
+        Calculates gradients and stores for specified layers.
+
+        Args:
+            loss: loss between prediction and ground truth.
+            collect_grad: Beggins to collect gradients, L1 and L2 norms if collect_grad = True.
+            layers: List of layers to be processed.
+        """
         loss.backward()
 
         if layers is not None:
             if collect_grads:
                 self.collect_grads(layers)
-
 
 
     def collect_grads(self, layers):
@@ -153,10 +158,9 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
     def save_tracked_data(self, save_folder):
         data = []
         for name, module in self.model.named_children():
-            print('-- before names;', module.name, module.track_flag, module.Trainable)
             if module.track_flag and module.Trainable:
                 tracker = module.master_tracker
-                print('tracker name: ', module.name)
+                
                 # Improve the data saving process
                 for i in range(len(tracker['L1'])):
                     data.append({
@@ -170,7 +174,17 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         df.to_csv(save_path, index = False)
 
 
-    def get_sim(self, x, layers, dim, sim_method = 'cosine'):
+    def get_sim(self, x, layers, dim, sim_method = 'kl_divergence'):
+        """
+        Calculates the similarity between the features across dim.
+
+        Args:
+            x: A 4D tensor of shape [batch_size, channels, height, width].
+            layers: A list containing the layers that need to be processed.
+            dim: Dimension to calculate the similarity across.
+            sim_method (str, optional): Specifies the method to apply for similarity:
+                'cosine' | 'kl_divergence'. Default: 'kl_divergence'.
+        """
         for name, module in self.model.named_children():
             if module.index in layers:
                 module.record_sim = True
