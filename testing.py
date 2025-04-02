@@ -47,9 +47,10 @@ optimizer = Adam(model.parameters(), lr=0.001)
 save_path = 'save_folder'
 wrapped_model = Master_analyzer(model)
 
+
 # print(wrapped_model)
 
-from torchview import draw_graph
+# from torchview import draw_graph
 # from BBDecoder.visualizer import draw_graph
 
 # input_size = (1, 3, 32, 32)
@@ -57,32 +58,32 @@ from torchview import draw_graph
 # model_graph.visual_graph.render("model_visualization_with_index", format = "png")
 
 
-transform = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-])
+# transform = transforms.Compose([
+#     transforms.ToTensor(),
+#     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+# ])
 
-trainset = torchvision.datasets.CIFAR10(
-    root='DATASETS',
-    train=True,
-    download=True,
-    transform=transform
-)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
+# trainset = torchvision.datasets.CIFAR10(
+#     root='DATASETS',
+#     train=True,
+#     download=True,
+#     transform=transform
+# )
+# trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
 
-testset = torchvision.datasets.CIFAR10(
-    root='DATASETS',
-    train=False,
-    download=True,
-    transform=transform
-)
+# testset = torchvision.datasets.CIFAR10(
+#     root='DATASETS',
+#     train=False,
+#     download=True,
+#     transform=transform
+# )
 
 # subset_indices = list(range(6))  # 96, Indices of the first 10 samples
 # subset = torch.utils.data.Subset(testset, subset_indices)
 
-testloader = torch.utils.data.DataLoader(testset, batch_size=32, shuffle=False)
+# testloader = torch.utils.data.DataLoader(testset, batch_size=32, shuffle=False)
 
-classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+# classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
 
 # wrapped_model.initialize_analyser(layer_inds = [0, 1, 2, 3, 4],
@@ -127,9 +128,9 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship'
 # wrapped_model.save_tracked_data(save_folder = 'O:\\PCodes\\black_box\\save_folder')
 
 
-for batch_idx, (inputs, targets) in enumerate(testloader):
-    print(f"Batch {batch_idx}:")
-    print("Inputs:", inputs.shape)
-    print("Targets:", targets.shape)
-    wrapped_model.get_sim(torch.unsqueeze(inputs.cuda()[0, :, :, :], dim=0), layers = [0, 1, 2, 3, 4, 5, 6], dim = 1)
-    break
+# for batch_idx, (inputs, targets) in enumerate(testloader):
+#     print(f"Batch {batch_idx}:")
+#     print("Inputs:", inputs.shape)
+#     print("Targets:", targets.shape)
+#     wrapped_model.get_sim(torch.unsqueeze(inputs.cuda()[0, :, :, :], dim=0), layers = [0, 1, 2, 3, 4, 5, 6], dim = 1)
+#     break

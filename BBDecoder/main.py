@@ -13,6 +13,7 @@ from matplotlib.lines import Line2D
 class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
     def __init__(self,
                  model,
+                 save_path,
                  input_size = (1, 3, 32, 32),
                  ):
         """
@@ -24,6 +25,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         super(Master_analyzer, self).__init__()
         self.model = model
         self.input_size = input_size
+        self.save_path = save_path
 
         self.layer_inds = None
 
@@ -40,8 +42,9 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         self.visualize_architecture()
 
     def visualize_architecture(self):
-        model_graph = draw_graph(self, input_size = self.input_size, expand_nested=True, hide_module_functions=True)
+        model_graph = draw_graph(self, input_size = self.input_size, expand_nested=True, hide_module_functions=True, directory = self.save_path)
         model_graph.visual_graph.render("Model_architecture", format = "png")
+
 
     def forward(self, x):
         # this is just for torchview visualization
@@ -95,7 +98,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             self.l2_norm = np.vstack((self.l2_norm, l2_norm))
 
 
-    def save_collected_grads(self, save_folder, ep):
+    def save_collected_grads(self, ep, save_folder = None):
         max_grads = np.max(self.max_grads, axis = 0)
         ave_grads = np.mean(self.ave_grads, axis = 0)
 
@@ -116,6 +119,9 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
                     Line2D([0], [0], color="k", lw=4)], ['max-gradient', 'mean-gradient', 'zero-gradient'])
         plt.tight_layout()
 
+        if save_folder == None:
+            save_folder = os.path.join(self.save_path, 'Gradient_saves')
+            
         save_path = os.path.join(save_folder, f'Epoch_{ep}_Grad_graph.jpg')
         if not os.path.exists(save_folder):
             os.makedirs(save_folder)
