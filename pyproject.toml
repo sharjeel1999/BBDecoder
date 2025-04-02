@@ -1,0 +1,48 @@
+[project]
+name = "BBDecoder"
+version = "1.1.1"
+authors = [
+    {name = Sharjeel Masood, email = sharjeelmasood.sm@gmail.com}
+]
+description = "Analysis of Pytorch Models"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+
+keywords = [
+    "pytorch", "visualization", "analysis",
+    "torch", "deep learning", "machine learning",
+    "ml", "neural network"
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Researchers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Research and Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "torchview",
+    "graphviz"
+]
+
+[project.urls]
+homepage = "https://github.com/sharjeel1999/Black-Box-Decoder"
+repository = "https://github.com/sharjeel1999/Black-Box-Decoder"
+
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.setuptools]
+packages = ["BBDecoder"]
+
