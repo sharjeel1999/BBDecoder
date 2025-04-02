@@ -5,7 +5,7 @@ from typing import Union
 import os
 import matplotlib.pyplot as plt
 
-from BBDecoder.utilities.similarity import cosine_similarity, kl_divergence
+from ..utilities import cosine_similarity, kl_divergence
 
 def has_trainable_parameters(module):
     return any(p.requires_grad for p in module.parameters())

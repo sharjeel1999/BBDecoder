@@ -3,6 +3,9 @@
 #launch.json folder
 
 save_folder/
+dist/
+develop-eggs/
+BBDecoder.egg-info/
 
 .png
 .gv

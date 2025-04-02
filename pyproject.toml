@@ -2,12 +2,13 @@
 name = "BBDecoder"
 version = "1.1.1"
 authors = [
-    {name = Sharjeel Masood, email = sharjeelmasood.sm@gmail.com}
+    {email = "sharjeelmasood.sm@gmail.com"},
+    {name = "Sharjeel Masood"}
 ]
 description = "Analysis of Pytorch Models"
 readme = "README.md"
 requires-python = ">=3.9"
-license = "MIT"
+license = {'text'= "MIT"}
 
 keywords = [
     "pytorch", "visualization", "analysis",
@@ -44,5 +45,11 @@ build-backend = "setuptools.build_meta"
 
 
 [tool.setuptools]
-packages = ["BBDecoder"]
+packages = [
+    "BBDecoder",
+    "BBDecoder.analysis",
+    "BBDecoder.utilities",
+    "BBDecoder.visualizer",
+    "BBDecoder.wrappers"
+    ]
 
