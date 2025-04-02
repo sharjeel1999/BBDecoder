@@ -19,13 +19,11 @@ keywords = [
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "Intended Audience :: Researchers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    "Topic :: Scientific/Engineering :: Research and Analysis",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
@@ -50,6 +48,7 @@ packages = [
     "BBDecoder.analysis",
     "BBDecoder.utilities",
     "BBDecoder.visualizer",
-    "BBDecoder.wrappers"
+    "BBDecoder.wrappers",
+    "assets"
     ]
 

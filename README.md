@@ -36,7 +36,7 @@ wrapped_model.save_collected_grads(save_folder, ep = epoch)
 
 The graphs will be saved directly in the `save_folder` path. `collect_grads = True` is grads need to be collected other wise `False`. `layers` is the list of layers that need to be analyzed
 
-![Grad](assets/model_gradients.jpg)
+![Grad](https://github.com/sharjeel1999/BBDecoder/blob/main/assets/model_gradients.jpg)
 
 _Mean and Max gradients through layers accross the entire dataset._
 
