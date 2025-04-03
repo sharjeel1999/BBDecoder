@@ -160,6 +160,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             
             save_path = os.path.join(norm_save_path, f'Epoch_{ep}_{self.rec_layers[i]}.jpg')
             plt.savefig(save_path)
+            plt.close()
 
     def save_tracked_data(self, save_folder):
         data = []
