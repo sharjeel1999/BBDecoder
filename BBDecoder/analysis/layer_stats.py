@@ -11,7 +11,7 @@ class LayerAnalyzer():
     def __init__(self):
         pass
 
-    def visualize_weight_hist(self, path, layer_inds):
+    def visualize_weight_hist(self, layer_inds, save_folder = None):
         for name, module in self.model.named_children():
             if module.index in layer_inds:
                 if module.Trainable:
@@ -25,8 +25,13 @@ class LayerAnalyzer():
                         plt.ylabel("Frequency")
                         plt.grid(True)
 
-                        save_path = os.path.join(path, f'hist_{module.name}.jpg')
-                        plt.savefig(save_path)
+                        if save_folder == None:
+                            save_folder = os.path.join(self.save_path, 'Weight_histograms')
+                            if not os.path.exists(save_folder):
+                                os.makedirs(save_folder)
+
+                        save_file = os.path.join(save_folder, f'hist_{module.name}.jpg')
+                        plt.savefig(save_file)
                         plt.close()
 
                     elif isinstance(module.main_layer, nn.Sequential):
@@ -41,9 +46,14 @@ class LayerAnalyzer():
                                 plt.ylabel("Frequency")
                                 plt.grid(True)
 
-                                save_path = os.path.join(path, f'hist_{module.name}.{sub_name}.jpg')
+                                if save_folder == None:
+                                    save_folder = os.path.join(self.save_path, 'Weight_histograms')
+                                    if not os.path.exists(save_folder):
+                                        os.makedirs(save_folder)
 
-                                plt.savefig(save_path)
+                                save_file = os.path.join(save_folder, f'hist_{module.name}.{sub_name}.jpg')
+
+                                plt.savefig(save_file)
                                 plt.close()
                 
 
