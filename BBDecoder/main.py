@@ -65,7 +65,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
     def forward_propagation(self, x):
         return self.model(x)
     
-    def backward_propagation(self, loss, collect_grads = False, layers = None):
+    def backward_propagation(self, loss, collect_grads = False, layer_inds = None):
         """
         Calculates gradients and stores for specified layers.
 
@@ -76,13 +76,13 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         """
         loss.backward()
 
-        if layers is not None:
+        if layer_inds is not None:
             if collect_grads:
-                self.collect_grads(layers)
+                self.collect_grads(layer_inds)
 
 
-    def collect_grads(self, layers):
-        self.layer_inds = layers
+    def collect_grads(self, layer_inds):
+        self.layer_inds = layer_inds
         
         iter_ave, iter_max, l1_norm, l2_norm, rec_layers = self.check_grads()
         self.rec_layers = rec_layers
@@ -181,7 +181,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         df.to_csv(save_path, index = False)
 
 
-    def get_sim(self, x, layers, dim, sim_method = 'kl_divergence'):
+    def get_sim(self, x, layer_inds, dim, sim_method = 'kl_divergence'):
         """
         Calculates the similarity between the features across dim.
 
@@ -192,8 +192,9 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             sim_method (str, optional): Specifies the method to apply for similarity:
                 'cosine' | 'kl_divergence'. Default: 'kl_divergence'.
         """
+        self.model.eval()
         for name, module in self.model.named_children():
-            if module.index in layers:
+            if module.index in layer_inds:
                 module.record_sim = True
                 module.sim_method = sim_method
                 module.sim_dim = dim
@@ -202,6 +203,6 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             _ = self.model(x)
 
         for name, module in self.model.named_children():
-            if module.index in layers:
+            if module.index in layer_inds:
                 print(f'Layer Index: {module.index}, Layer Name: {module.name}, Similarity Scores: {module.sim_scores}')
         

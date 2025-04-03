@@ -30,7 +30,7 @@ class Main_wrapper(nn.Module):
             return self.main_layer(x)
         else:
             out = self.main_layer(x)
-            self.inter_channel_div(out, self.sim_dim)
+            self.inter_channel_div(out.clone(), self.sim_dim)
             return out
     
     def inter_channel_div(self, x, dim):
