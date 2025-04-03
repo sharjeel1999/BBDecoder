@@ -1,14 +1,14 @@
 [project]
 name = "BBDecoder"
-version = "1.1.1"
+version = "1.1.4"
 authors = [
-    {email = "sharjeelmasood.sm@gmail.com"},
-    {name = "Sharjeel Masood"}
+    {name = "Sharjeel Masood", email = "sharjeelmasood.sm@gmail.com"},
+    {name = "Saeed Ahmed", email = "saeedahmad.icp@gmail.com"}
 ]
 description = "Analysis of Pytorch Models"
 readme = "README.md"
 requires-python = ">=3.9"
-license = {'text'= "MIT"}
+license = {text = "MIT"}
 
 keywords = [
     "pytorch", "visualization", "analysis",
@@ -49,6 +49,6 @@ packages = [
     "BBDecoder.utilities",
     "BBDecoder.visualizer",
     "BBDecoder.wrappers",
-    "assets"
     ]
 
+license-files = []
