@@ -2,6 +2,14 @@
 # BBDecoder
 ![Main Image](https://raw.githubusercontent.com/sharjeel1999/BBDecoder/main/assets/unnamed.png)
 
+
+[![Downloads](https://static.pepy.tech/personalized-badge/BBDecoder?period=total&units=international_system&left_color=grey&right_color=brightgreen&left_text=Downloads)](https://pepy.tech/project/BBDecoder)    [![PyPI](https://img.shields.io/pypi/v/BBDecoder)](https://pypi.org/project/BBDecoder/)   [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/csv-trans)](https://pypi.org/project/BBDecoder/)
+
+<p align="justify">
+BBDecoder is a Python package designed to provide essential tools for visually analyzing various aspects of the training and testing processes of deep learning models. It offers functionalities to help researchers and developers gain insights into their model's performance and behavior through visualizations and metrics.
+
+
+
 ## Installation
 First you need to install graphviz and torchview
 ```
