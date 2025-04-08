@@ -15,6 +15,8 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
                  model,
                  save_path,
                  input_size = (1, 3, 32, 32),
+                 depth = 3,
+                 modular = True
                  ):
         """
         Wrappes the entire model and contains functions to visualize and analyze the wrapped model
@@ -26,6 +28,8 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         self.model = model
         self.input_size = input_size
         self.save_path = save_path
+        self.modular = modular
+        self.depth = depth
 
         self.layer_inds = None
 
@@ -36,30 +40,90 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
 
         self.layer_names = []
 
+        self.cur_depth = 0
         self.wrap_layers()
         # print('----- List of layer and their indices -----')
         # list_layers(self.model)
         self.visualize_architecture()
 
+
     def visualize_architecture(self):
-        model_graph = draw_graph(self, input_size = self.input_size, expand_nested=True, hide_module_functions=True, directory = self.save_path)
+        model_graph = draw_graph(self, input_size = self.input_size, expand_nested=True, hide_module_functions=True,
+                                 directory = self.save_path, depth = 5)
         model_graph.visual_graph.render("Model_architecture", format = "png")
+        print('-------- Model architecture saved -----')
 
 
     def forward(self, x, *args, **kwargs):
         # this is just for torchview visualization
         return self.model(x, *args, **kwargs)
 
+    def wrap_sequential(self, module = None, pz = None):
+        for z,  (name, module) in enumerate(module.named_children()):
+            print('---- name: ', name)
+            print(f'Class Layer {z}: {module.__class__.__name__}, Curr Depth: {self.cur_depth}, Max Depth: {self.depth}')
 
-    def wrap_layers(self):
-        for z, (name, module) in enumerate(self.model.named_children()):
-            self.layer_names.append(name)
+            name = module.__class__.__name__
+
+            if self.cur_depth < self.depth:
+                print('--- triggered if ---')
+
+                if pz == None:
+                    cind = z
+                else:
+                    cind = str(pz) + '.' + str(z)
+
+                if isinstance(module, nn.Module) and not isinstance(module, nn.Sequential) and not isinstance(module, Main_wrapper):
+                    setattr(self.model, name, Main_wrapper(module, name, str(cind)))  
+                else:
+                    print('--- triggered else ---')
+                    self.cur_depth += 1
+                    self.wrap_sequential(module, cind)
             
-            if isinstance(module, nn.Module) or isinstance(module, nn.Sequential):#and not list(module.children()):  
-                setattr(self.model, name, Main_wrapper(module, name, z))
+            else:
+                setattr(self.model, name, Main_wrapper(module, name, str(cind)))
+
+
+    def wrap_layers(self, module = None, pz = None):
+        if module is None:
+            module = self.model
+        
+        print(module)
+        named_children_copy = list(module.named_children())
+
+        for z, (name, module) in enumerate(named_children_copy):
+            self.layer_names.append(name)
+            print(f'Class Layer {z}: {name}, Curr Depth: {self.cur_depth}, Max Depth: {self.depth}')
+
+            if pz == None:
+                cind = z
+            else:
+                cind = str(pz) + '.' + str(z)
+
+            if self.cur_depth < self.depth:
+                print('--- triggered if ---')
+
+                if isinstance(module, nn.Module) and not isinstance(module, nn.Sequential) and not isinstance(module, Main_wrapper):
+                    setattr(self.model, name, Main_wrapper(module, name, str(cind)))  
+                else:
+                    print('--- triggered else ---')
+                    self.cur_depth += 1
+                    self.wrap_layers(module, cind)
+            
+            else:
+                setattr(self.model, name, Main_wrapper(module, name, str(cind)))
+
+
+            # if isinstance(module, nn.Module) or isinstance(module, nn.Sequential):#and not list(module.children()):  
+            #     setattr(self.model, name, Main_wrapper(module, name, str(cind)))
+
+
+            # # Check if the module is a custom module and not a sequential container
+            # if hasattr(module, 'forward') and not isinstance(module, nn.Sequential):
+            #     # Wrap the module with Main_wrapper
+            #     setattr(self.model, name, Main_wrapper(module, name, z))
             # else:
-                # Recursively wrap layers in submodules (if any)
-                # Main_wrapper(module, name, z, False)
+
 
 
     def forward_propagation(self, x, *args, **kwargs):

@@ -45,7 +45,7 @@ from torch.optim import Adam
 optimizer = Adam(model.parameters(), lr=0.001)
 
 save_path = 'save_folder'
-wrapped_model = Master_analyzer(model)
+wrapped_model = Master_analyzer(model, 'O:\\PCodes\\black_box\\', modular = False, depth = 3)
 
 
 # print(wrapped_model)
