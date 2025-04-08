@@ -112,7 +112,10 @@ def module_forward_wrapper(model_graph: ComputationGraph) -> Callable[..., Any]:
         cur_depth = next(iter(input_nodes)).depth
         input_context = next(iter(input_nodes)).context
 
+        print('------------ ', mod)
         if type(mod).__name__ == 'Main_wrapper':
+            print('Name: ', mod.name)
+            print('Type name: ', type(mod).__name__)
             cur_node = ModuleNode(
                 mod, cur_depth, input_nodes,  # type: ignore[arg-type]
                 name=f'Index: {mod.index}'

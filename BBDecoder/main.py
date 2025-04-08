@@ -58,42 +58,15 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         # this is just for torchview visualization
         return self.model(x, *args, **kwargs)
 
-    def wrap_sequential(self, module = None, pz = None):
-        for z,  (name, module) in enumerate(module.named_children()):
-            print('---- name: ', name)
-            print(f'Class Layer {z}: {module.__class__.__name__}, Curr Depth: {self.cur_depth}, Max Depth: {self.depth}')
-
-            name = module.__class__.__name__
-
-            if self.cur_depth < self.depth:
-                print('--- triggered if ---')
-
-                if pz == None:
-                    cind = z
-                else:
-                    cind = str(pz) + '.' + str(z)
-
-                if isinstance(module, nn.Module) and not isinstance(module, nn.Sequential) and not isinstance(module, Main_wrapper):
-                    setattr(self.model, name, Main_wrapper(module, name, str(cind)))  
-                else:
-                    print('--- triggered else ---')
-                    self.cur_depth += 1
-                    self.wrap_sequential(module, cind)
-            
-            else:
-                setattr(self.model, name, Main_wrapper(module, name, str(cind)))
-
 
     def wrap_layers(self, module = None, pz = None):
         if module is None:
             module = self.model
         
-        print(module)
         named_children_copy = list(module.named_children())
 
         for z, (name, module) in enumerate(named_children_copy):
             self.layer_names.append(name)
-            print(f'Class Layer {z}: {name}, Curr Depth: {self.cur_depth}, Max Depth: {self.depth}')
 
             if pz == None:
                 cind = z
@@ -101,29 +74,14 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
                 cind = str(pz) + '.' + str(z)
 
             if self.cur_depth < self.depth:
-                print('--- triggered if ---')
-
                 if isinstance(module, nn.Module) and not isinstance(module, nn.Sequential) and not isinstance(module, Main_wrapper):
                     setattr(self.model, name, Main_wrapper(module, name, str(cind)))  
                 else:
-                    print('--- triggered else ---')
                     self.cur_depth += 1
                     self.wrap_layers(module, cind)
             
             else:
-                setattr(self.model, name, Main_wrapper(module, name, str(cind)))
-
-
-            # if isinstance(module, nn.Module) or isinstance(module, nn.Sequential):#and not list(module.children()):  
-            #     setattr(self.model, name, Main_wrapper(module, name, str(cind)))
-
-
-            # # Check if the module is a custom module and not a sequential container
-            # if hasattr(module, 'forward') and not isinstance(module, nn.Sequential):
-            #     # Wrap the module with Main_wrapper
-            #     setattr(self.model, name, Main_wrapper(module, name, z))
-            # else:
-
+                setattr(self.model, name, Main_wrapper(module, name, str(cind))) ##### just self.model not enough.....
 
 
     def forward_propagation(self, x, *args, **kwargs):
