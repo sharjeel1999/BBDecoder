@@ -46,9 +46,9 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         model_graph.visual_graph.render("Model_architecture", format = "png")
 
 
-    def forward(self, x):
+    def forward(self, x, *args, **kwargs):
         # this is just for torchview visualization
-        return self.model(x)
+        return self.model(x, *args, **kwargs)
 
 
     def wrap_layers(self):
@@ -62,8 +62,8 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
                 # Main_wrapper(module, name, z, False)
 
 
-    def forward_propagation(self, x):
-        return self.model(x)
+    def forward_propagation(self, x, *args, **kwargs):
+        return self.model(x, *args, **kwargs)
     
     def backward_propagation(self, loss, collect_grads = False, layer_inds = None):
         """

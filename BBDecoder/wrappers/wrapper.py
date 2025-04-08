@@ -25,11 +25,11 @@ class Main_wrapper(nn.Module):
         self.main_layer = layer
         self.Trainable = has_trainable_parameters(self.main_layer)
 
-    def forward(self, x):
+    def forward(self, x, *args, **kwargs):
         if self.record_sim == False:
-            return self.main_layer(x)
+            return self.main_layer(x, *args, **kwargs)
         else:
-            out = self.main_layer(x)
+            out = self.main_layer(x, *args, **kwargs)
             self.inter_channel_div(out.clone(), self.sim_dim)
             return out
     
@@ -43,5 +43,4 @@ class Main_wrapper(nn.Module):
         self.sim_scores.append(sim)
 
 
-    
         
