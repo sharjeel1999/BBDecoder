@@ -59,29 +59,37 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         return self.model(x, *args, **kwargs)
 
 
-    def wrap_layers(self, module = None, pz = None):
-        if module is None:
-            module = self.model
+    def wrap_layers(self):
+            for z, (name, module) in enumerate(self.model.named_children()):
+                self.layer_names.append(name)
+                
+                if isinstance(module, nn.Module) or isinstance(module, nn.Sequential):#and not list(module.children()):  
+                    setattr(self.model, name, Main_wrapper(module, name, z))
+
+    # def wrap_layers(self, module = None, pz = None):
+    #     Work on this afterwards
+    #     if module is None:
+    #         module = self.model
         
-        named_children_copy = list(module.named_children())
+    #     named_children_copy = list(module.named_children())
 
-        for z, (name, module) in enumerate(named_children_copy):
-            self.layer_names.append(name)
+    #     for z, (name, module) in enumerate(named_children_copy):
+    #         self.layer_names.append(name)
 
-            if pz == None:
-                cind = z
-            else:
-                cind = str(pz) + '.' + str(z)
+    #         if pz == None:
+    #             cind = z
+    #         else:
+    #             cind = str(pz) + '.' + str(z)
 
-            if self.cur_depth < self.depth:
-                if isinstance(module, nn.Module) and not isinstance(module, nn.Sequential) and not isinstance(module, Main_wrapper):
-                    setattr(self.model, name, Main_wrapper(module, name, str(cind)))  
-                else:
-                    self.cur_depth += 1
-                    self.wrap_layers(module, cind)
+    #         if self.cur_depth < self.depth:
+    #             if isinstance(module, nn.Module) and not isinstance(module, nn.Sequential) and not isinstance(module, Main_wrapper):
+    #                 setattr(self.model, name, Main_wrapper(module, name, str(cind)))  
+    #             else:
+    #                 self.cur_depth += 1
+    #                 self.wrap_layers(module, cind)
             
-            else:
-                setattr(self.model, name, Main_wrapper(module, name, str(cind))) ##### just self.model not enough.....
+    #         else:
+    #             setattr(self.model, name, Main_wrapper(module, name, str(cind))) ##### just self.model not enough.....
 
 
     def forward_propagation(self, x, *args, **kwargs):
