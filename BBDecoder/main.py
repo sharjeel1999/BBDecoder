@@ -235,4 +235,23 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         for name, module in self.model.named_children():
             if module.index in layer_inds:
                 print(f'Layer Index: {module.index}, Layer Name: {module.name}, Similarity Scores: {module.sim_scores}')
+    
+
+    def get_inter_features(self, input, layer, path):
+        """
+        Returns the intermediate features of the specified layer.
+
+        Args:
+            layer: Layer to be processed.
+            path: Folder Path to save the intermediate features.
+        """
+        self.model.eval()
+        for name, module in self.model.named_children():
+            if module.index == layer:
+                module.record_inter_features = True
+                module.inter_features_path = path
+
+        with torch.no_grad():
+            _ = self.model(torch.randn(self.input_size))
+
         

@@ -22,16 +22,25 @@ class Main_wrapper(nn.Module):
         self.sim_dim = None
         self.sim_scores = []
 
+        self.record_inter_features = False
+        self.inter_features_path = None
+
         self.main_layer = layer
         self.Trainable = has_trainable_parameters(self.main_layer)
 
     def forward(self, x, *args, **kwargs):
-        if self.record_sim == False:
-            return self.main_layer(x, *args, **kwargs)
-        else:
-            out = self.main_layer(x, *args, **kwargs)
+        out = self.main_layer(x, *args, **kwargs)
+
+        if self.record_inter_features == True:
+            if not os.path.exists(self.inter_features_path):
+                os.makedirs(self.inter_features_path)
+            plt.imsave(os.path.join(self.inter_features_path, f'{self.index}_{self.name}.png'), out[0].cpu().detach().numpy())#, cmap='gray')
+            self.record_inter_features = False
+
+        if self.record_sim == True:
             self.inter_channel_div(out.clone(), self.sim_dim)
-            return out
+
+        return out
     
     def inter_channel_div(self, x, dim):
         if self.sim_method == 'cosine':
