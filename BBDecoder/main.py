@@ -9,6 +9,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+import cv2
 
 class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
     def __init__(self,
@@ -32,6 +33,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         self.depth = depth
 
         self.layer_inds = None
+        self.vid_out = None
 
         self.ave_grads = []
         self.max_grads = []
@@ -45,7 +47,6 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         # print('----- List of layer and their indices -----')
         # list_layers(self.model)
         self.visualize_architecture()
-
 
     def visualize_architecture(self):
         model_graph = draw_graph(self, input_size = self.input_size, expand_nested=True, hide_module_functions=True,
@@ -237,11 +238,12 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
                 print(f'Layer Index: {module.index}, Layer Name: {module.name}, Similarity Scores: {module.sim_scores}')
     
 
-    def get_inter_features(self, input, layer, path):
+    def get_inter_features(self, test_input, layer, path):
         """
         Returns the intermediate features of the specified layer.
 
         Args:
+            test_input: Input tensor to be passed through the model.
             layer: Layer to be processed.
             path: Folder Path to save the intermediate features.
         """
@@ -252,6 +254,21 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
                 module.inter_features_path = path
 
         with torch.no_grad():
-            _ = self.model(torch.randn(self.input_size))
+            _ = self.model(test_input)
 
+
+    def compile_feature_evolution(self, test_input, layer, path, channel = None):
+        """
+        Compiles the intermediate features of the specified layer.
+
+        Args:
+            test_input: Input tensor to be passed through the model.
+            layer: Layer to be processed.
+            path: Folder Path to save the intermediate features.
+            channel: Channel to be processed. If None, randomly selects a channel.
+        """
+        if self.vid_out is None:
+
+            self.vid_out = cv2.VideoWriter(self.save_path + '/rec.avi', cv2.VideoWriter_fourcc(*'XVID'), 10, (self.input_size[2], self.input_size[3]))
         
+        # add a master class that will cache the data from the layer wrapper, it will inherit the layer wrapper and the master_analyzer class
