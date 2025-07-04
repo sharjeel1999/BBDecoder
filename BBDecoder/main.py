@@ -237,6 +237,19 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             if module.index in layer_inds:
                 print(f'Layer Index: {module.index}, Layer Name: {module.name}, Similarity Scores: {module.sim_scores}')
     
+    def initiate_recoding(self, layer, path):
+        """
+        Initiates the recording of intermediate features for the specified layer.
+
+        Args:
+            layer: Layer to be processed.
+        """
+        self.model.eval()
+        for name, module in self.model.named_children():
+            if module.index == layer:
+                module.record_inter_features = True
+                module.inter_features_path = path
+                break
 
     def get_inter_features(self, test_input, layer, path):
         """
@@ -247,16 +260,14 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             layer: Layer to be processed.
             path: Folder Path to save the intermediate features.
         """
-        self.model.eval()
-        for name, module in self.model.named_children():
-            if module.index == layer:
-                module.record_inter_features = True
-                module.inter_features_path = path
+
+        self.initiate_recoding(layer, path)
 
         with torch.no_grad():
             _ = self.model(test_input)
 
 
+    # initiate recording before calling this function. initiate recoding -> train -> compile_feature_evolution
     def compile_feature_evolution(self, test_input, layer, path, channel = None):
         """
         Compiles the intermediate features of the specified layer.
@@ -268,7 +279,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             channel: Channel to be processed. If None, randomly selects a channel.
         """
         if self.vid_out is None:
-
             self.vid_out = cv2.VideoWriter(self.save_path + '/rec.avi', cv2.VideoWriter_fourcc(*'XVID'), 10, (self.input_size[2], self.input_size[3]))
-        
+            
+
         # add a master class that will cache the data from the layer wrapper, it will inherit the layer wrapper and the master_analyzer class
