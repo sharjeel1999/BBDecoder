@@ -32,23 +32,24 @@ class Main_wrapper(nn.Module):
         self.Trainable = has_trainable_parameters(self.main_layer)
 
     def save_recorded_features(self):
-        if self.record_inter_features:
-            layer_path = os.path.join(self.inter_features_path,f'{self.index}_{self.name}')
-            if not os.path.exists(layer_path):
-                os.makedirs(layer_path)
-            
-            if self.record_dim is not None:
-                self.main_layer = self.main_layer[:, self.record_dim, :, :]
+        
+        layer_path = os.path.join(self.inter_features_path,f'{self.index}_{self.name}')
+        if not os.path.exists(layer_path):
+            os.makedirs(layer_path)
+        
+        if self.record_dim is not None:
+            self.main_layer = self.main_layer[:, self.record_dim, :, :]
 
-            ind_val = self.feats_archive.max_index
-            plt.imsave(os.path.join(layer_path, f'{self.name}_{ind_val}.png'), self.main_layer.cpu().detach().numpy())#, cmap='gray')
-            self.feats_archive.add_flow(os.path.join(layer_path, f'{self.name}_{ind_val}.png'))
+        ind_val = self.feats_archive.max_index
+        plt.imsave(os.path.join(layer_path, f'{self.name}_{ind_val}.png'), self.main_layer.cpu().detach().numpy())#, cmap='gray')
+        self.feats_archive.add_flow(os.path.join(layer_path, f'{self.name}_{ind_val}.png'))
 
     def forward(self, x, *args, **kwargs):
         out = self.main_layer(x, *args, **kwargs)
 
-        self.save_recorded_features()
-        self.record_inter_features = False
+        if self.record_inter_features:
+            self.save_recorded_features()
+            self.record_inter_features = False
 
         if self.record_sim == True:
             self.inter_channel_div(out.clone(), self.sim_dim)
