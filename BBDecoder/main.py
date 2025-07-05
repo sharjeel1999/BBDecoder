@@ -237,7 +237,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             if module.index in layer_inds:
                 print(f'Layer Index: {module.index}, Layer Name: {module.name}, Similarity Scores: {module.sim_scores}')
     
-    def initiate_recoding(self, layer, path):
+    def initiate_recoding(self, layer, path, dim = None):
         """
         Initiates the recording of intermediate features for the specified layer.
 
@@ -249,6 +249,8 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             if module.index == layer:
                 module.record_inter_features = True
                 module.inter_features_path = path
+                if dim is not None:
+                    module.record_dim = dim
                 break
 
     def get_inter_features(self, test_input, layer, path):

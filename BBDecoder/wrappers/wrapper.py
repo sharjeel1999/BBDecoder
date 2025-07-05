@@ -24,18 +24,25 @@ class Main_wrapper(nn.Module):
 
         self.record_inter_features = False
         self.inter_features_path = None
+        self.record_dim = None
 
         self.main_layer = layer
         self.Trainable = has_trainable_parameters(self.main_layer)
 
+    def save_recorded_features(self):
+        if self.record_inter_features:
+            if not os.path.exists(self.inter_features_path):
+                os.makedirs(self.inter_features_path)
+            
+            if self.record_dim is not None:
+                self.main_layer = self.main_layer[:, self.record_dim, :, :]
+            plt.imsave(os.path.join(self.inter_features_path, f'{self.index}_{self.name}.png'), self.main_layer.cpu().detach().numpy())#, cmap='gray')
+
     def forward(self, x, *args, **kwargs):
         out = self.main_layer(x, *args, **kwargs)
 
-        if self.record_inter_features == True:
-            if not os.path.exists(self.inter_features_path):
-                os.makedirs(self.inter_features_path)
-            plt.imsave(os.path.join(self.inter_features_path, f'{self.index}_{self.name}.png'), out[0].cpu().detach().numpy())#, cmap='gray')
-            self.record_inter_features = False
+        self.save_recorded_features()
+        self.record_inter_features = False
 
         if self.record_sim == True:
             self.inter_channel_div(out.clone(), self.sim_dim)
