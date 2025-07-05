@@ -6,6 +6,7 @@ import os
 import matplotlib.pyplot as plt
 
 from ..utilities import cosine_similarity, kl_divergence
+from ..analysis import FlowArchive
 
 def has_trainable_parameters(module):
     return any(p.requires_grad for p in module.parameters())
@@ -25,18 +26,23 @@ class Main_wrapper(nn.Module):
         self.record_inter_features = False
         self.inter_features_path = None
         self.record_dim = None
+        self.feats_archive = FlowArchive()
 
         self.main_layer = layer
         self.Trainable = has_trainable_parameters(self.main_layer)
 
     def save_recorded_features(self):
         if self.record_inter_features:
-            if not os.path.exists(self.inter_features_path):
-                os.makedirs(self.inter_features_path)
+            layer_path = os.path.join(self.inter_features_path,f'{self.index}_{self.name}')
+            if not os.path.exists(layer_path):
+                os.makedirs(layer_path)
             
             if self.record_dim is not None:
                 self.main_layer = self.main_layer[:, self.record_dim, :, :]
-            plt.imsave(os.path.join(self.inter_features_path, f'{self.index}_{self.name}.png'), self.main_layer.cpu().detach().numpy())#, cmap='gray')
+
+            ind_val = self.feats_archive.max_index
+            plt.imsave(os.path.join(layer_path, f'{self.name}_{ind_val}.png'), self.main_layer.cpu().detach().numpy())#, cmap='gray')
+            self.feats_archive.add_flow(os.path.join(layer_path, f'{self.name}_{ind_val}.png'))
 
     def forward(self, x, *args, **kwargs):
         out = self.main_layer(x, *args, **kwargs)
