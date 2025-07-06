@@ -237,7 +237,11 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             if module.index in layer_inds:
                 print(f'Layer Index: {module.index}, Layer Name: {module.name}, Similarity Scores: {module.sim_scores}')
     
-    def initiate_recoding(self, layer, path, dim = None):
+
+
+
+
+    def initiate_feature_recoding(self, layer, path, dim = None):
         """
         Initiates the recording of intermediate features for the specified layer.
 
@@ -263,14 +267,14 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             path: Folder Path to save the intermediate features.
         """
 
-        self.initiate_recoding(layer, path)
+        self.initiate_feature_recoding(layer, path)
 
         with torch.no_grad():
             _ = self.model(test_input)
 
 
     # initiate recording before calling this function. initiate recoding -> train -> compile_feature_evolution
-    def compile_feature_evolution(self, test_input, layer, path, channel = None):
+    def compile_feature_evolution(self, layer):
         """
         Compiles the intermediate features of the specified layer.
 
