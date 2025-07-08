@@ -284,21 +284,24 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             path: Folder Path to save the intermediate features.
             channel: Channel to be processed. If None, randomly selects a channel.
         """
-        if self.vid_out is None:
-            self.vid_out = cv2.VideoWriter(self.save_path + '/rec.avi', cv2.VideoWriter_fourcc(*'XVID'), 10, (self.input_size[2], self.input_size[3]))
+        # if self.vid_out is None:
+        #     self.vid_out = cv2.VideoWriter(self.save_path + f'/Layer{layer}_feature_evolution.mp4', cv2.VideoWriter_fourcc(*'MP4V'), 10, (self.input_size[2], self.input_size[3]))
 
         for name, module in self.model.named_children():
             if module.index == layer:
                 feats_archive = module.feats_archive
                 flows = feats_archive.get_all_flows()
+
+                width, height = module.get_frame_size()
+                vid_out = cv2.VideoWriter(self.save_path + f'/Layer{module.index}_feature_evolution.mp4', cv2.VideoWriter_fourcc(*'MP4V'), 10, (width, height))
                 
                 for sample in flows:
                     image = cv2.imread(sample)
                     
                     if image is not None:
-                        self.vid_out.write(image)
+                        vid_out.write(image)
         
-        if self.vid_out is not None:
-            self.vid_out.release()
+                if vid_out is not None:
+                    vid_out.release()
                         
         

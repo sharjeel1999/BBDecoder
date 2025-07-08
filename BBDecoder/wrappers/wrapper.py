@@ -27,10 +27,16 @@ class Main_wrapper(nn.Module):
         self.record_inter_features = False
         self.inter_features_path = None
         self.record_dim = None
+        self.f_width, self.f_height = None, None
         self.feats_archive = FlowArchive()
 
         self.main_layer = layer
         self.Trainable = has_trainable_parameters(self.main_layer)
+
+    def get_frame_size(self):
+        if self.f_width is None or self.f_height is None:
+            raise ValueError("Feature dimensions are not set. Ensure to save features before getting frame size.")
+        return self.f_width, self.f_height
 
     def save_recorded_features(self, feats):
         layer_path = os.path.join(self.inter_features_path,f'{self.index}_{self.name}')
@@ -41,6 +47,9 @@ class Main_wrapper(nn.Module):
 
         if self.record_dim is not None:
             feats = feats[:, self.record_dim, :, :]
+        
+        if self.f_width is None and self.f_height is None:
+            self.f_width, self.f_height = feats.shape[2], feats.shape[3]
 
         ind_val = self.feats_archive.max_index
         plt.imsave(os.path.join(layer_path, f'{self.name}_{ind_val}.png'), feats.cpu().detach().numpy())#, cmap='gray')
