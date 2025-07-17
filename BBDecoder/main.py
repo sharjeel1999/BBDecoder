@@ -295,13 +295,21 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
                 width, height = module.get_frame_size()
                 vid_out = cv2.VideoWriter(self.save_path + f'/Layer{module.index}_feature_evolution.mp4', cv2.VideoWriter_fourcc(*'MP4V'), 10, (width, height))
                 
+                if not vid_out.isOpened():
+                    print('Error: Could not open video writer')
+                    
+
                 for sample in flows:
                     image = cv2.imread(sample)
+
+                    if image is None:
+                        print(f'Could not opend image at path: {sample}')
                     
                     if image is not None:
                         vid_out.write(image)
         
                 if vid_out is not None:
                     vid_out.release()
+                    cv2.destroyAllWindows()
                         
         

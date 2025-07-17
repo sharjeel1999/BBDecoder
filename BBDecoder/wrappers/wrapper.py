@@ -39,6 +39,7 @@ class Main_wrapper(nn.Module):
         return self.f_width, self.f_height
 
     def save_recorded_features(self, feats):
+        print('recorded input features shape:', feats.shape)
         layer_path = os.path.join(self.inter_features_path,f'{self.index}_{self.name}')
         if not os.path.exists(layer_path):
             os.makedirs(layer_path)
@@ -46,8 +47,9 @@ class Main_wrapper(nn.Module):
         assert feats.shape[0] == 1, "Batch size must be 1 for feature saving."
 
         if self.record_dim is not None:
-            feats = feats[:, self.record_dim, :, :]
+            feats = feats[0, self.record_dim, :, :]
         
+        print('feature slice shape:', feats.shape)
         if self.f_width is None and self.f_height is None:
             self.f_width, self.f_height = feats.shape[2], feats.shape[3]
 
