@@ -4,6 +4,7 @@ import torch.nn as nn
 from typing import Union
 import os
 import matplotlib.pyplot as plt
+import numpy as np
 
 from ..utilities import cosine_similarity, kl_divergence
 from ..analysis import FlowArchive
@@ -28,10 +29,14 @@ class Main_wrapper(nn.Module):
         self.inter_features_path = None
         self.record_dim = None
         self.f_width, self.f_height = None, None
+        self.post_proc_function = None
         self.feats_archive = FlowArchive()
 
         self.main_layer = layer
         self.Trainable = has_trainable_parameters(self.main_layer)
+
+    def default_processor(self, x):
+        return x.cpu().detach().numpy()
 
     def get_frame_size(self):
         if self.f_width is None or self.f_height is None:
@@ -46,15 +51,25 @@ class Main_wrapper(nn.Module):
         
         assert feats.shape[0] == 1, "Batch size must be 1 for feature saving."
 
+        if self.f_width is None and self.f_height is None:
+            self.f_width, self.f_height = feats.shape[2], feats.shape[3]
+
         if self.record_dim is not None:
             feats = feats[0, self.record_dim, :, :]
         
         print('feature slice shape:', feats.shape)
-        if self.f_width is None and self.f_height is None:
-            self.f_width, self.f_height = feats.shape[2], feats.shape[3]
+
+        if self.post_proc_function is None:
+            self.post_proc_function = self.default_processor
+
+        feats = self.post_proc_function(feats)
+
+        assert isinstance(feats, np.ndarray), \
+        f"output of the post_proc function must be a numpy array, but got type: {type(feats)}"
+        
 
         ind_val = self.feats_archive.max_index
-        plt.imsave(os.path.join(layer_path, f'{self.name}_{ind_val}.png'), feats.cpu().detach().numpy())#, cmap='gray')
+        plt.imsave(os.path.join(layer_path, f'{self.name}_{ind_val}.png'), feats)#, cmap='gray')
         self.feats_archive.add_flow(os.path.join(layer_path, f'{self.name}_{ind_val}.png'))
 
     def forward(self, x, *args, **kwargs):

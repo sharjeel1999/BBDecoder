@@ -257,7 +257,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
                     module.record_dim = dim
                 break
 
-    def get_inter_features(self, test_input, layer, path):
+    def get_inter_features(self, test_input, layer, path, post_proc = None, dim = None):
         """
         Returns the intermediate features of the specified layer.
 
@@ -267,7 +267,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             path: Folder Path to save the intermediate features.
         """
 
-        self.initiate_feature_recoding(layer, path)
+        self.initiate_feature_recoding(layer, path, dim)
 
         with torch.no_grad():
             _ = self.model(test_input)
@@ -310,6 +310,5 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         
                 if vid_out is not None:
                     vid_out.release()
-                    cv2.destroyAllWindows()
                         
         

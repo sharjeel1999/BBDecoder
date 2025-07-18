@@ -1,6 +1,6 @@
 [project]
 name = "BBDecoder"
-version = "1.1.12"
+version = "1.1.15"
 authors = [
     {name = "Sharjeel Masood", email = "sharjeelmasood.sm@gmail.com"},
     {name = "Saeed Ahmed", email = "saeedahmad.icp@gmail.com"}
