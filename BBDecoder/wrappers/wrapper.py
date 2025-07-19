@@ -44,7 +44,7 @@ class Main_wrapper(nn.Module):
         return self.f_width, self.f_height
 
     def save_recorded_features(self, feats):
-        print('recorded input features shape:', feats.shape)
+        
         layer_path = os.path.join(self.inter_features_path,f'{self.index}_{self.name}')
         if not os.path.exists(layer_path):
             os.makedirs(layer_path)
@@ -57,7 +57,6 @@ class Main_wrapper(nn.Module):
         if self.record_dim is not None:
             feats = feats[0, self.record_dim, :, :]
         
-        print('feature slice shape:', feats.shape)
 
         if self.post_proc_function is None:
             self.post_proc_function = self.default_processor
