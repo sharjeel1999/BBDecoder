@@ -42,7 +42,7 @@ wrapped_model = Master_analyzer(model, save_path, input_size)
 `wrapped_model.backward_propagation()` can be used to get gradients of each layer and also the L1 and L2 norms of the gradient for each itteration.
 
 ```
-for data in tqdm(testloader):
+for data in tqdm(train_loader):
     inputs, labels = data
     inputs, labels = inputs.to(device), labels.to(device)
     
@@ -83,6 +83,8 @@ Weight histograms can be used to identify saturation, divergence and clustering 
 
 _Weight histograms of multi-layer perceptrons and convolutional layers._
 
+
+
 ### Divergence calculation
 
 `get_sim(x, layer_inds, dim)` function can be used to calculate how similar the features are accross a certain dimension, this can be used to perform studies similar to [vision transformers with patch diversificattion](https://arxiv.org/pdf/2104.12753).
@@ -93,3 +95,43 @@ forward propagation on the input `x` will generate features, the features simila
 wrapped_model.get_sim(torch.unsqueeze(inputs.cuda()[0, :, :, :], dim=0), layer_inds = [0, 1, 2, 3, 4, 5, 6], dim = 1)
 ```
 
+
+### Get Intermediate Features
+
+You can easily record intermediate features from each layer in the model through `get_inter_features(test_input, layer, path, post_proc = None, dim = None)`. `test_input` is the input you want to use to extract the features, the output features of `layer` will be stored at path `path`. `post_proc` represents the function that will e applied on the output features of `layer` before being saved. If `dim` is not noen then only the specified dimension will be saved.
+
+
+For example if you want to check the intermediate features of a certain layer after a training loop you can do so as follows
+```
+for epoch in EPOCHS:
+    for data in tqdm(train_loader):
+                .
+                .
+            training logic
+                .
+                .
+
+    sample = torch.tensor(test_sample)
+    sample = sample.unsqueeze(0).to(device).float()
+    wrapped_model.get_inter_features(sample, layer = 9, './saves', post_proc_function)
+```
+
+You can also generate a small video on how your intermediate features evolved throughout the entire training process. By using the `compile_feature_evaluation(layer, fps)` function. This function compiles all of the previously stored features of a certain specified layer.
+
+```
+for epoch in EPOCHS:
+    for data in tqdm(train_loader):
+                .
+                .
+            training logic
+                .
+                .
+
+    sample = torch.tensor(test_sample)
+    sample = sample.unsqueeze(0).to(device).float()
+    wrapped_model.get_inter_features(sample, layer = 9, './saves', post_proc_function)
+
+
+# Compiles all of the previously stored features of layer with index 9 after each epoch.
+wrapped_model.compile_feature_evolution(layer = 9, fps = 5) 
+```

@@ -6,6 +6,7 @@ save_folder/
 dist/
 develop-eggs/
 BBDecoder.egg-info/
+testing.py
 
 .png
 .gv
