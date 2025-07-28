@@ -241,7 +241,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
 
 
 
-    def initiate_feature_recoding(self, layer, path, post_proc = None, dim = None):
+    def initiate_feature_recoding(self, layer, path, post_proc = None):
         """
         Initiates the recording of intermediate features for the specified layer.
 
@@ -256,11 +256,11 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
                 if post_proc is not None:
                     module.post_proc_function = post_proc
                     
-                if dim is not None:
-                    module.record_dim = dim
+                # if dim is not None:
+                #     module.record_dim = dim
                 break
 
-    def get_inter_features(self, test_input, layer, path, post_proc = None, dim = None):
+    def get_inter_features(self, test_input, layer, path, post_proc = None):
         """
         Returns the intermediate features of the specified layer.
 
@@ -270,7 +270,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             path: Folder Path to save the intermediate features.
         """
 
-        self.initiate_feature_recoding(layer, path, post_proc, dim)
+        self.initiate_feature_recoding(layer, path, post_proc)
 
         with torch.no_grad():
             _ = self.model(test_input)

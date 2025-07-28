@@ -27,7 +27,7 @@ class Main_wrapper(nn.Module):
 
         self.record_inter_features = False
         self.inter_features_path = None
-        self.record_dim = None
+        # self.record_dim = None
         self.f_width, self.f_height = None, None
         self.post_proc_function = None
         self.feats_archive = FlowArchive()
@@ -54,12 +54,16 @@ class Main_wrapper(nn.Module):
         if self.f_width is None and self.f_height is None:
             self.f_width, self.f_height = feats.shape[2], feats.shape[3]
 
-        if self.record_dim is not None:
-            feats = feats[0, self.record_dim, :, :]
+        # if self.record_dim is not None:
+        #     feats = feats[0, self.record_dim, :, :]
         
 
         if self.post_proc_function is None:
             self.post_proc_function = self.default_processor
+
+        print('-- before post proc function --')
+        assert callable(self.post_proc_function), \
+        f"post_proc_function must be callable, but got type: {type(self.post_proc_function)}"
 
         feats = self.post_proc_function(feats)
 
