@@ -33,7 +33,7 @@ class BiasScorer:
     def get_maps(self, image, targets, target_layers):
         cam = self.cams[self.bias_calculator](model = self.model, target_layers = target_layers)
 
-        attention_map = torch.tensor(cam(input_tensor = image, targets = targets), device=self.device)
+        attentions = torch.tensor(cam(input_tensor = image, targets = targets), device=self.device)
 
         if self.resize_attentions:
             attentions = transforms.functional.resize(
@@ -49,3 +49,10 @@ class BiasScorer:
         attentions = torch.clamp(attentions, min=0, max=1)
         
         return attentions
+    
+    def calculate_heatmap_score(self, images, targets, target_layers):
+
+        outputs = self.model(images)
+        attentions = self.get_maps(images, targets, target_layers)
+        score = torch.mean(attentions).item()
+        return score
