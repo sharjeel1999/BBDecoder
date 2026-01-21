@@ -54,6 +54,12 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         model_graph.visual_graph.render("Model_architecture", format = "png")
         print('-------- Model architecture saved -----')
 
+    def initiate_gradcam(self, layers):
+        self.model.eval()
+        for name, module in self.model.named_children():
+            if module.index in layers:
+                module.gradcam_flag = True
+
 
     def forward(self, x, *args, **kwargs):
         # this is just for torchview visualization

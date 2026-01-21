@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from ..utilities import cosine_similarity, kl_divergence
-from ..archives.flow_archive import FlowArchive
+from ..archives import FlowArchive, GradArchive
 
 
 def has_trainable_parameters(module):
@@ -30,10 +30,17 @@ class Main_wrapper(nn.Module):
         # self.record_dim = None
         self.f_width, self.f_height = None, None
         self.post_proc_function = None
+
         self.feats_archive = FlowArchive()
+        self.grad_archive = GradArchive()
+        self.gradcam_flag = False
 
         self.main_layer = layer
         self.Trainable = has_trainable_parameters(self.main_layer)
+
+    def initiate_hooks(self):
+        self.main_layer.register_forward_hook(self.grad_archive._hook_activations)
+        self.main_layer.register_backward_hook(self.grad_archive._hook_gradients)
 
     def default_processor(self, x):
         return x.cpu().detach().numpy()
