@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from ..utilities import cosine_similarity, kl_divergence
-from ..analysis import FlowArchive
+from ..archives.flow_archive import FlowArchive
 
 
 def has_trainable_parameters(module):
