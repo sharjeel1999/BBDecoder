@@ -48,6 +48,9 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         # list_layers(self.model)
         self.visualize_architecture()
 
+        # I need to be able to access things like:
+        # 1) list of all indices and names of layers
+
     def visualize_architecture(self):
         model_graph = draw_graph(self, input_size = self.input_size, expand_nested=True, hide_module_functions=True,
                                  directory = self.save_path, depth = 5)
