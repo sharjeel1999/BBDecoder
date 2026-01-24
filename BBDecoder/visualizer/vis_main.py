@@ -266,7 +266,10 @@ def forward_prop(
                     raise ValueError("Unknown input type")
     except Exception as e:
         raise RuntimeError(
-            "Failed to run torchgraph see error message"
+            "Failed to run torchgraph see error message. This can be due to any exceptions" \
+            " raised during model forward propagation of your model. Like input related issues," \
+            "Memory/device issues, etc. If you think this is a bug, please submit a github issue" \
+            " with a minimal reproducible example."
         ) from e
     finally:
         model.train(saved_model_mode)

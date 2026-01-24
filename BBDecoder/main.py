@@ -59,6 +59,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         for name, module in self.model.named_children():
             if module.index in layers:
                 module.gradcam_flag = True
+                module.initiate_hooks()
 
 
     def forward(self, x, *args, **kwargs):
