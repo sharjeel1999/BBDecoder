@@ -321,5 +321,47 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         
                 if vid_out is not None:
                     vid_out.release()
+    
+    def GradCAM_run(self, layer, input_tensor, target_class = None):
+        """
+        Generates a Grad-CAM heatmap for the specified layer.
+
+        Supports classification outputs shaped (N, C) and segmentation outputs
+        shaped (N, C, H, W) by reducing the selected class scores to a scalar
+        before backpropagation.
+        """
+
+        self.model.eval()
+        target_module = None
+        for name, module in self.model.named_children():
+            if module.index == layer:
+                module.gradcam_flag = True
+                module.initiate_hooks()
+                target_module = module
+                break
+
+        if target_module is None:
+            raise ValueError(f"Layer with index {layer} not found.")
+
+        output = self.model(input_tensor)
+
+        if output.dim() == 4:  # Segmentation: (N, C, H, W)
+            if target_class is None:
+                target_class = torch.sum(output, dim=(2, 3)).argmax(dim=1)[0].item()
+            target_score = output[:, target_class, :, :].mean()
+
+        elif output.dim() == 2:  # Classification: (N, C)
+            if target_class is None:
+                target_class = output.argmax(dim=1)[0].item()
+            target_score = output[:, target_class].mean()
+
+        else:
+            raise ValueError(f"Unsupported output shape {tuple(output.shape)} for Grad-CAM.")
+
+        self.model.zero_grad()
+        target_score.backward()
+
+        heatmap = target_module.grad_archive.get_local_heatmap()
+        return heatmap
                         
         
