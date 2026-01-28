@@ -122,87 +122,9 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
                 self.collect_grads(layer_inds)
 
 
-    def collect_grads(self, layer_inds):
-        self.layer_inds = layer_inds
-        
-        iter_ave, iter_max, l1_norm, l2_norm, rec_layers = self.check_grads()
-        self.rec_layers = rec_layers
-        if len(self.ave_grads) == 0:
-            self.ave_grads = iter_ave
-            self.max_grads = iter_max
-            self.l1_norm = l1_norm
-            self.l2_norm = l2_norm
-        else:
-            self.ave_grads = np.vstack((self.ave_grads, iter_ave))
-            self.max_grads = np.vstack((self.max_grads, iter_max))
-            self.l1_norm = np.vstack((self.l1_norm, l1_norm))
-            self.l2_norm = np.vstack((self.l2_norm, l2_norm))
 
-
-    def save_collected_grads(self, ep, save_folder = None):
-        max_grads = np.max(self.max_grads, axis = 0)
-        ave_grads = np.mean(self.ave_grads, axis = 0)
-
-        plt.figure(figsize=(15, 6)) # (width, height)
-
-        plt.bar(np.arange(len(max_grads)), max_grads, alpha=0.1, lw=1, color="c")
-        plt.bar(np.arange(len(max_grads)), ave_grads, alpha=0.1, lw=1, color="b")
-        plt.hlines(0, 0, len(ave_grads)+1, lw=2, color="k" )
-        plt.xticks(range(0,len(ave_grads), 1), self.rec_layers, rotation="vertical")
-        plt.xlim(left=0, right=len(ave_grads))
-        plt.ylim(bottom = -0.001, top=0.02) # zoom in on the lower gradient regions
-        plt.xlabel("Layers")
-        plt.ylabel("average gradient")
-        plt.title("Gradient flow")
-        plt.grid(True)
-        plt.legend([Line2D([0], [0], color="c", lw=4),
-                    Line2D([0], [0], color="b", lw=4),
-                    Line2D([0], [0], color="k", lw=4)], ['max-gradient', 'mean-gradient', 'zero-gradient'])
-        plt.tight_layout()
-
-        if save_folder == None:
-            save_folder = os.path.join(self.save_path, 'Gradient_saves')
-            
-        save_path = os.path.join(save_folder, f'Epoch_{ep}_Grad_graph.jpg')
-        if not os.path.exists(save_folder):
-            os.makedirs(save_folder)
-        plt.savefig(save_path)
-        plt.close()
-
-        self.plot_paired_lines_from_arrays(save_folder, ep)
-
-        self.ave_grads = []
-        self.max_grads = []
-        self.rec_layers = 0
-        self.l1_norm = []
-        self.l2_norm = []
-
-
-    def plot_paired_lines_from_arrays(self, save_dir, ep):
-        
-        norm_save_path = os.path.join(save_dir, 'norms')
-        if not os.path.exists(norm_save_path):
-            os.makedirs(norm_save_path)
-
-        a, b = self.l1_norm.shape  # Get the dimensions (both arrays have the same shape)
-
-        for i in range(b):
-            plt.figure(figsize=(10, 6))  # Create a new figure for each pair of lines
-            plt.title(f"Gradient norm (Layer {self.rec_layers[i]})")  # Unique title for each subplot
-            plt.xlabel('Itterations')
-            plt.ylabel("Gradient Norm")
-
-            # Plot the two lines on the same graph
-            plt.plot(self.l1_norm[:, i], label=f'L1', color='blue')
-            plt.plot(self.l2_norm[:, i], label=f'L2', color='orange')
-
-            plt.legend()
-            plt.grid(True)
-            
-            save_path = os.path.join(norm_save_path, f'Epoch_{ep}_{self.rec_layers[i]}.jpg')
-            plt.savefig(save_path)
-            plt.close()
-
+    # save_tracked_data() is no longer needed collect_grads() in GradAnalyzer does this.
+    # CONFIRM AND DELETE LATER
     def save_tracked_data(self, save_folder):
         data = []
         for name, module in self.model.named_children():
@@ -222,6 +144,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         df.to_csv(save_path, index = False)
 
 
+    # Runs a forward prop, so it must stay here
     def get_sim(self, x, layer_inds, dim, sim_method = 'kl_divergence'):
         """
         Calculates the similarity between the features across dim.
@@ -249,8 +172,6 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
     
 
 
-
-
     def initiate_feature_recoding(self, layer, path, post_proc = None):
         """
         Initiates the recording of intermediate features for the specified layer.
@@ -270,6 +191,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
                 #     module.record_dim = dim
                 break
 
+    # Maybe do this for a batch of inputs instead of a single test_input
     def get_inter_features(self, test_input, layer, path, post_proc = None):
         """
         Returns the intermediate features of the specified layer.
