@@ -11,11 +11,13 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import cv2
 
+from ptflops import get_model_complexity_info
+
 class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
     def __init__(self,
                  model,
                  save_path,
-                 input_size = (1, 3, 32, 32),
+                 input_size,
                  depth = 3,
                  modular = True
                  ):
@@ -44,12 +46,27 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
 
         self.cur_depth = 0
         self.wrap_layers()
-        # print('----- List of layer and their indices -----')
-        # list_layers(self.model)
-        self.visualize_architecture()
+
+        self.summary()
+        # self.visualize_architecture()
 
         # I need to be able to access things like:
         # 1) list of all indices and names of layers
+
+    def summary(self):
+        print('----- List of layer and their indices -----')
+        list_layers(self.model)
+
+        # total_params = sum(p.numel() for p in self.model.parameters())
+        # print(f'----- Total model parameters: {total_params} -----')
+
+        macs, params = get_model_complexity_info(self.model, self.input_size, as_strings=True,
+                                        print_per_layer_stat=True, verbose=True)
+        
+        print(f'Computational complexity: {macs}')
+        print(f'Number of parameters: {params}')
+
+
 
     def visualize_architecture(self):
         model_graph = draw_graph(self, input_size = self.input_size, expand_nested=True, hide_module_functions=True,
@@ -71,6 +88,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
 
 
     def wrap_layers(self):
+            
             for z, (name, module) in enumerate(self.model.named_children()):
                 self.layer_names.append(name)
                 

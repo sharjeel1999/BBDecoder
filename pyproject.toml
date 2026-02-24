@@ -1,6 +1,6 @@
 [project]
 name = "BBDecoder"
-version = "1.1.18"
+version = "1.1.23"
 authors = [
     {name = "Sharjeel Masood", email = "sharjeelmasood.sm@gmail.com"},
     {name = "Saeed Ahmed", email = "saeedahmad.icp@gmail.com"}
@@ -52,6 +52,7 @@ packages = [
     "BBDecoder",
     "BBDecoder.analysis",
     "BBDecoder.utilities",
+    "BBDecoder.archives",
     "BBDecoder.visualizer",
     "BBDecoder.wrappers",
     ]
