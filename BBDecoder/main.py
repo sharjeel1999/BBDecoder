@@ -123,7 +123,10 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
 
     def forward_propagation(self, x, *args, **kwargs):
         return self.model(x, *args, **kwargs)
+
     
+
+
     def backward_propagation(self, loss, collect_grads = False, layer_inds = None):
         """
         Calculates gradients and stores for specified layers.
@@ -261,6 +264,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         
                 if vid_out is not None:
                     vid_out.release()
+    
     
     def GradCAM_run(self, layer, input_tensor, target_class = None):
         """
