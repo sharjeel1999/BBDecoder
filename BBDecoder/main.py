@@ -67,28 +67,25 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         print(f'Number of parameters: {params}')
 
 
-
     def visualize_architecture(self):
         model_graph = draw_graph(self, input_size = self.input_size, expand_nested=True, hide_module_functions=True,
                                  directory = self.save_path, depth = 5)
         model_graph.visual_graph.render("Model_architecture", format = "png")
         print('-------- Model architecture saved -----')
 
-    def initiate_gradcam(self, layers):
-        self.model.eval()
+    def intiate_comps_recording(self):
         for name, module in self.model.named_children():
-            if module.index in layers:
-                module.gradcam_flag = True
-                module.initiate_hooks()
+                if isinstance(module, Main_wrapper):
+                    module.record_comps = True
 
-
+    # since i am not using torchview maybe remove this and just use forward_propagation or replace it with forward_propagation
+    # CHECK THIS........
     def forward(self, x, *args, **kwargs):
         # this is just for torchview visualization
         return self.model(x, *args, **kwargs)
 
 
     def wrap_layers(self):
-            
             for z, (name, module) in enumerate(self.model.named_children()):
                 self.layer_names.append(name)
                 
@@ -121,10 +118,11 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
     #             setattr(self.model, name, Main_wrapper(module, name, str(cind))) ##### just self.model not enough.....
 
 
-    def forward_propagation(self, x, *args, **kwargs):
+    def forward_propagation(self, x, record_comps=False, *args, **kwargs):
+        if record_comps:
+            self.intiate_comps_recording()
+            
         return self.model(x, *args, **kwargs)
-
-    
 
 
     def backward_propagation(self, loss, collect_grads = False, layer_inds = None):
@@ -142,6 +140,40 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
             if collect_grads:
                 self.collect_grads(layer_inds)
 
+    # should i create a CompAnalyzer class in analysis folder and move this function there? CHECK THIS.........
+    def save_comps_plots(self, save_folder):
+        #create 2 plt plots one for flops and one for inference time
+        flops = []        
+        inf_times = []
+        layer_names = []
+        for name, module in self.model.named_children():
+            if module.record_comps and module.Trainable:
+                comps_info = module.comp_archive.get_comps()
+                flops.append(comps_info['flops'])
+                inf_times.append(comps_info['inf_time'])
+                layer_names.append(module.name)
+        
+        plt.figure(figsize=(10, 5))
+        plt.subplot(1, 2, 1)
+        plt.bar(layer_names, flops)
+        plt.title('FLOPs per Layer')
+        plt.xlabel('Layer')
+        plt.ylabel('FLOPs')
+        plt.xticks(rotation=45)
+        plt.grid(axis='y')
+        
+        plt.subplot(1, 2, 2)
+        plt.bar(layer_names, inf_times)
+        plt.title('Inference Time per Layer')
+        plt.xlabel('Layer')
+        plt.ylabel('Inference Time (seconds)')
+        plt.xticks(rotation=45)
+        plt.grid(axis='y')
+
+        save_path = os.path.join(save_folder, 'comps_plots.png')
+        plt.tight_layout()
+        plt.savefig(save_path)
+        plt.close()
 
 
     # save_tracked_data() is no longer needed collect_grads() in GradAnalyzer does this.
@@ -228,7 +260,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
         with torch.no_grad():
             _ = self.model(test_input)
 
-
+    # This doesn't work well, CHECK THIS TOOO.........
     # initiate recording before calling this function. initiate recoding -> train -> compile_feature_evolution
     def compile_feature_evolution(self, layer, fps = 5):
         """
@@ -265,7 +297,7 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
                 if vid_out is not None:
                     vid_out.release()
     
-    
+
     def GradCAM_run(self, layer, input_tensor, target_class = None):
         """
         Generates a Grad-CAM heatmap for the specified layer.
@@ -307,5 +339,6 @@ class Master_analyzer(nn.Module, GradAnalyzer, LayerAnalyzer):
 
         heatmap = target_module.grad_archive.get_local_heatmap()
         return heatmap
+
                         
         

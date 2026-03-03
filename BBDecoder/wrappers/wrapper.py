@@ -93,6 +93,7 @@ class Main_wrapper(nn.Module):
 
         if self.record_comps and self.Trainable:
             self.comp_archive.record_comps(self.main_layer, x)
+            self.comp_archive.record_inf_time(self.main_layer, x, args, kwargs)
 
         if self.record_inter_features:
             self.save_recorded_features(out.clone())
